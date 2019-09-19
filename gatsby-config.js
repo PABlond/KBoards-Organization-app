@@ -16,6 +16,14 @@ module.exports = {
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     `gatsby-plugin-typescript`,
+    `gatsby-transformer-json`,
+    {
+
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `./src/data/`
+      }
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
