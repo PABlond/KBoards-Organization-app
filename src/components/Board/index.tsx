@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import { Container, Row, Col, ListGroup, Dropdown } from "react-bootstrap"
 import { FaEllipsisH } from "react-icons/fa"
 import EditRow from "./../EditRow"
-import { IData, IColumn } from "./../../interfaces/data.interface"
+import { IData, IRow } from "./../../interfaces/data.interface"
 
 export default (inputData: IData) => {
-  const [onPointer, setOnPointer] = useState<String | null>(null)
+  const [onPointer, setOnPointer] = useState<string | null>(null)
   const [data, setData] = useState<IData>(inputData)
   const [showEdit, setShowEdit] = useState({
     content: { name: "" },
@@ -13,12 +13,18 @@ export default (inputData: IData) => {
     colName: "",
     i: 0,
   })
-  console.log(data)
-  const editData = updatedData => {
+
+  const editData = (updatedData: {
+    name: string
+    colName: string
+    i: number
+  }) => {
     const { name, colName, i } = updatedData
     setData({
       ...data,
-      [colName]: data[colName].map((row, j) => (i !== j ? row : { name })),
+      [colName]: (data as any)[colName].map((row: IRow, j: number) =>
+        i !== j ? row : { name }
+      ),
     })
     setShowEdit({ ...showEdit, status: false })
   }
@@ -34,25 +40,25 @@ export default (inputData: IData) => {
     },
   }
 
-  const removeRow = (colName, task) =>
-    data[colName]
-      .map((el, j) => (el.name !== task.name ? el : null))
+  const removeRow = (colName: string, task: IRow) =>
+    (data as any)[colName]
+      .map((el: IRow) => (el.name !== task.name ? el : null))
       .filter(Boolean)
 
-  const onMouseUp = (colName, i) => {
+  const onMouseUp = (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
-      const task = data[colName][i]
+      const task = (data as any)[colName][i]
       setData({
         ...data,
-        [onPointer]: [...data[onPointer], task],
+        [onPointer]: [...(data as any)[onPointer], task],
         [colName]: removeRow(colName, task),
       })
     }
   }
 
-  const deleteItem = (colName, i) => {
+  const deleteItem = (colName: string, i: number) => {
     console.log(colName, i)
-    const task: IColumn = data[colName][i]
+    const task: IRow = (data as any)[colName][i]
     setData({
       ...data,
       [colName]: removeRow(colName, task),

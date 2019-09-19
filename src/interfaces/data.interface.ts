@@ -1,9 +1,9 @@
-export interface IColumn {
+export interface IRow {
     name: string
 }
 
 export interface IData {
-  toDo: IColumn[]
-  progress: IColumn[]
-  done: IColumn[]
+  toDo: IRow[]
+  progress: IRow[]
+  done: IRow[]
 }

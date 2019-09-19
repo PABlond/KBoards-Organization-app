@@ -1,7 +1,16 @@
 import React, { useState } from "react"
 import { Modal, Button, Form } from "react-bootstrap"
+import { IRow } from "./../interfaces/data.interface"
 
-export default ({ handleClose, data, editData }) => {
+export default ({
+  handleClose,
+  data,
+  editData,
+}: {
+  handleClose: () => void
+  data: { content: IRow; status: boolean; colName: string; i: number }
+  editData: (args: { name: string; colName: string; i: number }) => void
+}) => {
   const [updatedData, setUpdatedData] = useState({
     name: "",
   })
@@ -16,7 +25,7 @@ export default ({ handleClose, data, editData }) => {
           type="text"
           placeholder={data.content.name}
           value={updatedData.name}
-          onChange={e =>
+          onChange={(e: any) =>
             setUpdatedData({ ...updatedData, name: e.target.value })
           }
         />
