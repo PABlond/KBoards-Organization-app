@@ -72,7 +72,6 @@ export default (inputData: IData) => {
   const addRow = ({
     name,
     colName,
-    i,
     description,
   }: {
     name: string
@@ -84,7 +83,7 @@ export default (inputData: IData) => {
       colName,
       description,
     })
-    setData({ ...data, [colName]: [...data[colName], { name, description }] })
+    setData({ ...data, [colName]: [...(data as any)[colName], { name, description }] })
     setShowAdd({ ...showAdd, status: false })
   }
 
