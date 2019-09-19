@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Container, Row, Col, ListGroup, Dropdown } from "react-bootstrap"
-import { FaEllipsisH } from "react-icons/fa"
-import EditRow from "./../EditRow"
+import { FaEllipsisH, FaPlus } from "react-icons/fa"
+import EditRow from "./../Modals/EditRow"
+import AddRow from "./../Modals/AddRow"
 import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
 
 export default (inputData: IData) => {
@@ -14,6 +15,7 @@ export default (inputData: IData) => {
     i: 0,
   }
   const [showEdit, setShowEdit] = useState<IModalData>(initialModalData)
+  const [showAdd, setShowAdd] = useState<IModalData>(initialModalData)
 
   const style = {
     listGroup: {
@@ -67,14 +69,46 @@ export default (inputData: IData) => {
     })
   }
 
+  const addRow = ({
+    name,
+    colName,
+    i,
+    description,
+  }: {
+    name: string
+    colName: string
+    description: string
+  }) => {
+    console.log("ADD ROW", {
+      name,
+      colName,
+      description,
+    })
+    setData({ ...data, [colName]: [...data[colName], { name, description }] })
+    setShowAdd({ ...showAdd, status: false })
+  }
+
   return (
     <Container fluid>
       <Container>
         <Row className="mt-5">
           <Col md={4}>
-            <Container className="border">
+            <Container>
               <ListGroup onDragEnter={() => setOnPointer("toDo")}>
-                <ListGroup.Item variant="danger">To do</ListGroup.Item>
+                <ListGroup.Item
+                  variant="danger"
+                  className="text-center font-weight-bold"
+                >
+                  To do{" "}
+                  <span
+                    style={{ float: "right" }}
+                    onClick={() =>
+                      setShowAdd({ ...showAdd, colName: "toDo", status: true })
+                    }
+                  >
+                    <FaPlus />
+                  </span>
+                </ListGroup.Item>
                 {data.toDo &&
                   data.toDo.map((task, i) => (
                     <ListGroup.Item
@@ -117,9 +151,22 @@ export default (inputData: IData) => {
           </Col>
 
           <Col md={4}>
-            <Container className="border">
+            <Container>
               <ListGroup onDragEnter={() => setOnPointer("progress")}>
-                <ListGroup.Item variant="warning">In progress</ListGroup.Item>
+                <ListGroup.Item
+                  variant="warning"
+                  className="text-center font-weight-bold"
+                >
+                  Doing
+                  <span
+                    style={{ float: "right" }}
+                    onClick={() =>
+                      setShowAdd({ ...showAdd, colName: "progress", status: true })
+                    }
+                  >
+                    <FaPlus />
+                  </span>
+                </ListGroup.Item>
                 {data.progress &&
                   data.progress.map((task, i) => (
                     <ListGroup.Item
@@ -150,7 +197,9 @@ export default (inputData: IData) => {
                           >
                             Edit
                           </Dropdown.Item>
-                          <Dropdown.Item onClick={() => deleteItem("progress", i)}>
+                          <Dropdown.Item
+                            onClick={() => deleteItem("progress", i)}
+                          >
                             Delete
                           </Dropdown.Item>
                         </Dropdown.Menu>
@@ -162,9 +211,22 @@ export default (inputData: IData) => {
           </Col>
 
           <Col md={4}>
-            <Container className="border">
+            <Container>
               <ListGroup onDragEnter={() => setOnPointer("done")}>
-                <ListGroup.Item variant="info">Done</ListGroup.Item>
+                <ListGroup.Item
+                  variant="info"
+                  className="text-center font-weight-bold"
+                >
+                  Done
+                  <span
+                    style={{ float: "right" }}
+                    onClick={() =>
+                      setShowAdd({ ...showAdd, colName: "done", status: true })
+                    }
+                  >
+                    <FaPlus />
+                  </span>
+                </ListGroup.Item>
                 {data.done &&
                   data.done.map((task, i) => (
                     <ListGroup.Item
@@ -207,10 +269,16 @@ export default (inputData: IData) => {
           </Col>
         </Row>
       </Container>
+
       <EditRow
         handleClose={() => setShowEdit({ ...showEdit, status: false })}
         data={showEdit}
         editData={editData}
+      />
+      <AddRow
+        handleClose={() => setShowAdd({ ...showAdd, status: false })}
+        addData={addRow}
+        data={showAdd}
       />
     </Container>
   )

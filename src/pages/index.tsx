@@ -3,8 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./../assets/css/style.css"
 import { StaticQuery, graphql } from "gatsby"
 import { IRow } from "./../interfaces/data.interface"
-
-import Board from "./../components/Board"
+import {Container} from 'react-bootstrap'
+import Board from  "./../components/Board"
+import Footer from './../components/Footer'
 
 export default () => {
   const formatResult = (edges: { node: IRow }[]) =>
@@ -47,7 +48,15 @@ export default () => {
         const progress = formatResult(data.allProgressJson.edges)
         const done = formatResult(data.allDoneJson.edges)
         const props = { toDo, progress, done }
-        return <Board {...props} />
+        return (
+          <Container fluid style={{minHeight: "100vh"}}>
+            <h1 className="text-center mt-3 w-100 p-3  font-weight-bold">
+              Kanban Board
+            </h1>
+            <Board {...props} />
+            <Footer />
+          </Container>
+        )
       }}
     />
   )
