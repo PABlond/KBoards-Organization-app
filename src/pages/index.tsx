@@ -2,14 +2,15 @@ import React from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./../assets/css/style.css"
 import { StaticQuery, graphql } from "gatsby"
+import { IRow } from "./../interfaces/data.interface"
 
 import Board from "./../components/Board"
 
 export default () => {
-  const formatResult = (edges: { node: { name: string } }[]) =>
+  const formatResult = (edges: { node: IRow }[]) =>
     edges.map(edge => {
-      const { name } = edge.node
-      return { name }
+      const { name, description } = edge.node
+      return { name, description }
     })
   return (
     <StaticQuery
@@ -19,6 +20,7 @@ export default () => {
             edges {
               node {
                 name
+                description
               }
             }
           }
@@ -26,6 +28,7 @@ export default () => {
             edges {
               node {
                 name
+                description
               }
             }
           }
@@ -33,6 +36,7 @@ export default () => {
             edges {
               node {
                 name
+                description
               }
             }
           }

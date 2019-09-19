@@ -1,1 +1,5 @@
-[{ "name": "task 3" }, { "name": "task 4" }, { "name": "task 5" }]
+[
+  { "name": "task 3", "description": "A brief description for this task" },
+  { "name": "task 4", "description": "A brief description for this task" },
+  { "name": "task 5", "description": "A brief description for this task" }
+]

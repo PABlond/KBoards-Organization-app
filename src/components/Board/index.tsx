@@ -2,32 +2,18 @@ import React, { useState } from "react"
 import { Container, Row, Col, ListGroup, Dropdown } from "react-bootstrap"
 import { FaEllipsisH } from "react-icons/fa"
 import EditRow from "./../EditRow"
-import { IData, IRow } from "./../../interfaces/data.interface"
+import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
 
 export default (inputData: IData) => {
   const [onPointer, setOnPointer] = useState<string | null>(null)
   const [data, setData] = useState<IData>(inputData)
-  const [showEdit, setShowEdit] = useState({
-    content: { name: "" },
+  const initialModalData = {
+    content: { name: "", description: "" },
     status: false,
     colName: "",
     i: 0,
-  })
-
-  const editData = (updatedData: {
-    name: string
-    colName: string
-    i: number
-  }) => {
-    const { name, colName, i } = updatedData
-    setData({
-      ...data,
-      [colName]: (data as any)[colName].map((row: IRow, j: number) =>
-        i !== j ? row : { name }
-      ),
-    })
-    setShowEdit({ ...showEdit, status: false })
   }
+  const [showEdit, setShowEdit] = useState<IModalData>(initialModalData)
 
   const style = {
     listGroup: {
@@ -38,6 +24,22 @@ export default (inputData: IData) => {
         alignItems: "center",
       },
     },
+  }
+
+  const editData = (updatedData: {
+    name: string
+    description: string
+    colName: string
+    i: number
+  }) => {
+    const { name, description, colName, i } = updatedData
+    setData({
+      ...data,
+      [colName]: (data as any)[colName].map((row: IRow, j: number) =>
+        i !== j ? row : { name, description }
+      ),
+    })
+    setShowEdit(initialModalData)
   }
 
   const removeRow = (colName: string, task: IRow) =>
@@ -94,7 +96,7 @@ export default (inputData: IData) => {
                                 ...showEdit,
                                 content: data["toDo"]
                                   ? data["toDo"][i]
-                                  : { name: "" },
+                                  : { name: "", description: "" },
                                 status: true,
                                 colName: "toDo",
                                 i,
@@ -133,8 +135,22 @@ export default (inputData: IData) => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                          <Dropdown.Item href="#/action-2">Edit</Dropdown.Item>
-                          <Dropdown.Item href="#/action-3">
+                          <Dropdown.Item
+                            onClick={() =>
+                              setShowEdit({
+                                ...showEdit,
+                                content: data["progress"]
+                                  ? data["progress"][i]
+                                  : { name: "", description: "" },
+                                status: true,
+                                colName: "progress",
+                                i,
+                              })
+                            }
+                          >
+                            Edit
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={() => deleteItem("progress", i)}>
                             Delete
                           </Dropdown.Item>
                         </Dropdown.Menu>
@@ -164,8 +180,22 @@ export default (inputData: IData) => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                          <Dropdown.Item href="#/action-2">Edit</Dropdown.Item>
-                          <Dropdown.Item href="#/action-3">
+                          <Dropdown.Item
+                            onClick={() =>
+                              setShowEdit({
+                                ...showEdit,
+                                content: data["done"]
+                                  ? data["done"][i]
+                                  : { name: "", description: "" },
+                                status: true,
+                                colName: "done",
+                                i,
+                              })
+                            }
+                          >
+                            Edit
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={() => deleteItem("done", i)}>
                             Delete
                           </Dropdown.Item>
                         </Dropdown.Menu>
@@ -185,10 +215,3 @@ export default (inputData: IData) => {
     </Container>
   )
 }
-
-// export default (inputData) => {
-
-//     console.log(inputData)
-
-//     return <p>Heses</p>
-// }
