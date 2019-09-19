@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Modal, Button, Form } from "react-bootstrap"
-import { IRow } from "./../interfaces/data.interface"
+import { IRow } from "./../../interfaces/data.interface"
 
 export default ({
   data,
