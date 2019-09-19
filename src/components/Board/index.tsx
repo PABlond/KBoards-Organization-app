@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Container, Row, Col, ListGroup, Dropdown } from "react-bootstrap"
-import { FaEllipsisH, FaPlus } from "react-icons/fa"
+import { FaEllipsisH, FaPlus, FaArrowsAltH } from "react-icons/fa"
 import EditRow from "./../Modals/EditRow"
 import AddRow from "./../Modals/AddRow"
 import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
@@ -61,7 +61,6 @@ export default (inputData: IData) => {
   }
 
   const deleteItem = (colName: string, i: number) => {
-    console.log(colName, i)
     const task: IRow = (data as any)[colName][i]
     setData({
       ...data,
@@ -78,13 +77,20 @@ export default (inputData: IData) => {
     colName: string
     description: string
   }) => {
-    console.log("ADD ROW", {
-      name,
-      colName,
-      description,
+    setData({
+      ...data,
+      [colName]: [...(data as any)[colName], { name, description }],
     })
-    setData({ ...data, [colName]: [...(data as any)[colName], { name, description }] })
     setShowAdd({ ...showAdd, status: false })
+  }
+
+  const moveTo = (from: string, to: string, i: number) => {
+    const task = (data as any)[from][i]
+    setData({
+      ...data,
+      [from]: removeRow(from, task),
+      [to]: [...(data as any)[to], task],
+    })
   }
 
   return (
@@ -117,32 +123,54 @@ export default (inputData: IData) => {
                       style={style.listGroup.item}
                     >
                       {task.name}
-                      <Dropdown>
-                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                          <FaEllipsisH />{" "}
-                        </Dropdown.Toggle>
+                      <span style={{ display: "flex" }}>
+                        <Dropdown>
+                          <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            <FaArrowsAltH />
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => moveTo("toDo", "progress", i)}
+                            >
+                              Doing
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => moveTo("toDo", "done", i)}
+                            >
+                              Done
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                          <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            <FaEllipsisH />{" "}
+                          </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() =>
-                              setShowEdit({
-                                ...showEdit,
-                                content: data["toDo"]
-                                  ? data["toDo"][i]
-                                  : { name: "", description: "" },
-                                status: true,
-                                colName: "toDo",
-                                i,
-                              })
-                            }
-                          >
-                            Edit
-                          </Dropdown.Item>
-                          <Dropdown.Item onClick={() => deleteItem("toDo", i)}>
-                            Delete
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() =>
+                                setShowEdit({
+                                  ...showEdit,
+                                  content: data["toDo"]
+                                    ? data["toDo"][i]
+                                    : { name: "", description: "" },
+                                  status: true,
+                                  colName: "toDo",
+                                  i,
+                                })
+                              }
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item></Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => deleteItem("toDo", i)}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </span>
                     </ListGroup.Item>
                   ))}
               </ListGroup>
@@ -160,7 +188,11 @@ export default (inputData: IData) => {
                   <span
                     style={{ float: "right" }}
                     onClick={() =>
-                      setShowAdd({ ...showAdd, colName: "progress", status: true })
+                      setShowAdd({
+                        ...showAdd,
+                        colName: "progress",
+                        status: true,
+                      })
                     }
                   >
                     <FaPlus />
@@ -175,34 +207,53 @@ export default (inputData: IData) => {
                       style={style.listGroup.item}
                     >
                       {task.name}
-                      <Dropdown>
-                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                          <FaEllipsisH />{" "}
-                        </Dropdown.Toggle>
+                      <span style={{ display: "flex" }}>
+                        <Dropdown>
+                          <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            <FaArrowsAltH />
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => moveTo("progress", "toDo", i)}
+                            >
+                              To do
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => moveTo("progress", "done", i)}
+                            >
+                              Done
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                          <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            <FaEllipsisH />{" "}
+                          </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() =>
-                              setShowEdit({
-                                ...showEdit,
-                                content: data["progress"]
-                                  ? data["progress"][i]
-                                  : { name: "", description: "" },
-                                status: true,
-                                colName: "progress",
-                                i,
-                              })
-                            }
-                          >
-                            Edit
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => deleteItem("progress", i)}
-                          >
-                            Delete
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() =>
+                                setShowEdit({
+                                  ...showEdit,
+                                  content: data["progress"]
+                                    ? data["progress"][i]
+                                    : { name: "", description: "" },
+                                  status: true,
+                                  colName: "progress",
+                                  i,
+                                })
+                              }
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => deleteItem("progress", i)}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </span>
                     </ListGroup.Item>
                   ))}
               </ListGroup>
@@ -235,32 +286,53 @@ export default (inputData: IData) => {
                       style={style.listGroup.item}
                     >
                       {task.name}
-                      <Dropdown>
-                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                          <FaEllipsisH />{" "}
-                        </Dropdown.Toggle>
+                      <span style={{ display: "flex" }}>
+                        <Dropdown>
+                          <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            <FaArrowsAltH />
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => moveTo("done", "toDo", i)}
+                            >
+                              To do
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => moveTo("done", "progress", i)}
+                            >
+                              Doing
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                          <Dropdown.Toggle variant="light" id="dropdown-basic">
+                            <FaEllipsisH />{" "}
+                          </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() =>
-                              setShowEdit({
-                                ...showEdit,
-                                content: data["done"]
-                                  ? data["done"][i]
-                                  : { name: "", description: "" },
-                                status: true,
-                                colName: "done",
-                                i,
-                              })
-                            }
-                          >
-                            Edit
-                          </Dropdown.Item>
-                          <Dropdown.Item onClick={() => deleteItem("done", i)}>
-                            Delete
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() =>
+                                setShowEdit({
+                                  ...showEdit,
+                                  content: data["done"]
+                                    ? data["done"][i]
+                                    : { name: "", description: "" },
+                                  status: true,
+                                  colName: "done",
+                                  i,
+                                })
+                              }
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => deleteItem("done", i)}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </span>
                     </ListGroup.Item>
                   ))}
               </ListGroup>
