@@ -1,23 +1,25 @@
 import { getUser } from "./auth"
 import client from "../config/apolloClient"
 import gql from "graphql-tag"
-import dispatchCurrentBoard from './dispatchCurrentBoard'
+import dispatchCurrentBoard from "./dispatchCurrentBoard"
 
-export default async ({ id, boardId, to }) => {
+export default async ({ id, name, description, boardId }) => {
   const token = getUser()
 
   const query = gql`
-    query MoveTo(
+    query EditRow(
       $token: String
       $boardId: String
       $id: Int
-      $to: String
+      $name: String
+      $description: String
     ) {
-      moveTo(
+      editRow(
         token: $token
         boardId: $boardId
         id: $id
-        to: $to
+        name: $name
+        description: $description
       ) {
         id
         name
@@ -34,10 +36,11 @@ export default async ({ id, boardId, to }) => {
         token,
         id,
         boardId,
-        to
+        name,
+        description,
       },
     })
     .catch(err => err)
 
-    return dispatchCurrentBoard(response.data.moveTo)
+    return dispatchCurrentBoard(response.data.editRow)
 }

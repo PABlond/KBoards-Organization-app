@@ -7,7 +7,8 @@ import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
 import { connect } from "react-redux"
 import dispatchAddRow from "./../../actions/dispatchAddRow"
 import dispatchDeleteRow from "./../../actions/dispatchDeleteRow"
-import dispatchMoveTo from './../../actions/dispatchMoveTo'
+import dispatchMoveTo from "./../../actions/dispatchMoveTo"
+import dispatchEditRow from "./../../actions/dispatchEditRow"
 
 const Board = ({ boards, boardId }: { boards: any }) => {
   const [onPointer, setOnPointer] = useState<string | null>(null)
@@ -22,7 +23,6 @@ const Board = ({ boards, boardId }: { boards: any }) => {
   const [showAdd, setShowAdd] = useState<IModalData>(initialModalData)
 
   useEffect(() => {
-    console.log("RE RENDER", boards.currentBoard)
     setData(boards.currentBoard)
   }, [boards])
 
@@ -43,30 +43,20 @@ const Board = ({ boards, boardId }: { boards: any }) => {
     i: number
   }) => {
     const { name, description, colName, i } = updatedData
-    setData({
-      ...data,
-      [colName]: (data as any)[colName].map((row: IRow, j: number) =>
-        i !== j ? row : { name, description }
-      ),
-    })
+    const task = (data as any)[colName][i]
+    dispatchEditRow({ id: task.id, name, description, boardId })
     setShowEdit(initialModalData)
   }
 
-  const removeRow = (colName: string, task: IRow) =>
-    (data as any)[colName]
-      .map((el: IRow) => (el.name !== task.name ? el : null))
-      .filter(Boolean)
-
   const onMouseUp = async (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
-      console.log('MOVE TO: ', onPointer)
       const task = (data as any)[colName][i]
-      await dispatchMoveTo({id: task.id, boardId, to: onPointer})
+      await dispatchMoveTo({ id: task.id, boardId, to: onPointer })
     }
   }
 
   const deleteItem = (colName: string, i: number) => {
-    const {id}: IRow = (data as any)[colName][i]
+    const { id }: IRow = (data as any)[colName][i]
     dispatchDeleteRow({ id, boardId })
   }
 
@@ -85,7 +75,7 @@ const Board = ({ boards, boardId }: { boards: any }) => {
 
   const moveTo = async (from: string, to: string, i: number) => {
     const task = (data as any)[from][i]
-    await dispatchMoveTo({id: task.id, boardId, to})
+    await dispatchMoveTo({ id: task.id, boardId, to })
   }
 
   return (
@@ -351,7 +341,6 @@ const Board = ({ boards, boardId }: { boards: any }) => {
 }
 
 function mapStateToProps(state: any) {
-  console.log(state)
   return {
     boards: state.boards,
   }

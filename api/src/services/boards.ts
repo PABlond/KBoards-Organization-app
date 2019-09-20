@@ -129,6 +129,32 @@ const addRow = async ({
   return await getTickets({ id: boardId })
 }
 
+const editRow = async ({
+  token,
+  id,
+  boardId,
+  name,
+  description,
+}: {
+  token: string
+  id: String
+  boardId: String
+  name: String
+  description: String
+}) => {
+  const user = await auth.user({ token })
+  if (user.id) {
+    await connection.query(
+      `UPDATE board_tickets SET name = ?, description = ? WHERE id = ?`,
+      [name, description, id]
+    )
+
+    const tickets = await getTickets({ id: boardId })
+    console.log(tickets)
+    return tickets
+  }
+}
+
 export default {
   getBoards,
   createBoard,
@@ -136,4 +162,5 @@ export default {
   addRow,
   deleteRow,
   moveTo,
+  editRow,
 }

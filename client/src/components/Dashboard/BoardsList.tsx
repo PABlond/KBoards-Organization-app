@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { Container } from "react-bootstrap"
+import { Container, Button } from "react-bootstrap"
 import { navigate } from "gatsby"
 import { IBoard } from "./../../interfaces/data.interface"
 
-export default ({ boards }: {boards: IBoard[]}) => {
+export default ({ boards }: { boards: IBoard[] }) => {
   const navigateToBoard = board => {
-    console.log(board)
     navigate(`/dashboard/board?id=${board.id}`)
   }
 
@@ -15,9 +14,11 @@ export default ({ boards }: {boards: IBoard[]}) => {
       {boards.length ? (
         <Container>
           {boards.map((board: IBoard, i: number) => (
-            <a onClick={() => navigateToBoard(board)} key={i}>
-              {board.title}
-            </a>
+            <p key={i}>
+              <Button onClick={() => navigateToBoard(board)}>
+                {board.title}
+              </Button>
+            </p>
           ))}
         </Container>
       ) : (

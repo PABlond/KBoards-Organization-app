@@ -43,6 +43,19 @@ export default {
   }) => {
     return await boards.moveTo({ token, id, boardId, to })
   },
+  editRow: async ({
+    token,
+    id,
+    boardId,
+    name, description
+  }: {
+    token: string
+    id: String
+    boardId: string
+    name: String, description: String
+  }) => {
+    return await boards.editRow({ token, id, boardId, name, description })
+  },
   addRow: async ({
     token,
     name,

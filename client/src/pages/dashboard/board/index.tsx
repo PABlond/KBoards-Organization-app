@@ -32,8 +32,8 @@ const BoardPage = ({ location }: { location: any }) => {
         },
       })
       .catch(err => err)
-console.log(response)
-    dispatchCurrentBoard(response.data.getBoardTickets)
+
+      dispatchCurrentBoard(response.data.getBoardTickets)
     setLoading(false)
   }
   useEffect(() => {

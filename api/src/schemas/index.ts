@@ -50,5 +50,6 @@ export default buildSchema(`
     addRow(token: String, name: String, description: String, column: String, boardId: String): [Ticket]
     deleteRow(token: String, id: Int, boardId: String): [Ticket]
     moveTo(token: String, id: Int, boardId: String, to: String): [Ticket]
+    editRow(token: String, id: Int, boardId: String, name: String, description: String): [Ticket]
   }
 `)
