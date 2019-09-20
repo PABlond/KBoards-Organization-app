@@ -9,9 +9,6 @@ export default (
         signIn,
         signUp,
         userInfo,
-        setLastSessions,
-        setLastAlerts,
-        setLiveSessions
     } = constants
     const { type, payload } = action
     switch (type) {
@@ -28,21 +25,6 @@ export default (
                 id: payload.id,
                 firstname: payload.firstname,
                 lastname: payload.lastname,
-            }
-        case setLastSessions.name:
-            return {
-                ...state,
-                previousSessions: payload,
-            }
-        case setLastAlerts.name:
-            return {
-                ...state,
-                previousAlerts: payload,
-            }
-        case setLiveSessions.name: 
-            return {
-                ...state,
-                liveSessions: payload
             }
         default:
             return state

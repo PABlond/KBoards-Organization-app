@@ -13,11 +13,7 @@ export default {
         maxWidth: 0,
         maxHeight: 0,
     },
-    stream: {
-        loading: true,
-        motionDetect: true,
-    },
-    receiver: {
-        loading: true,
-    },
+    boards: {
+        list: []
+    }
 }

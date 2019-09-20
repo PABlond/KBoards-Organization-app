@@ -15,3 +15,11 @@ export interface IModalData {
   colName: string
   i: number
 }
+
+export interface IBoard {
+  title: string,
+  description: string
+  created_at: string
+  last_update: string
+  role: string
+}

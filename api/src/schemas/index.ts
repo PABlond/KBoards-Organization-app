@@ -10,33 +10,22 @@ export default buildSchema(`
     isLogged: Boolean
   }
 
-  type LiveStream {
-    id: String
-  }
-
-  type LiveMonitor {
-    id: String
-  }
-
   type Token {
     token: String
   }
 
-  type PreviousSession {
-    started_at: String
-    ended_at: String
-    id: String
-  }
-
-  type PreviousAlerts {
-    owner: Int
-    type_alert: String
-    video_url: String
-    created_at: String
-  }
-
   type UserConfirm {
     response: Boolean
+  }
+
+  type Board {
+    id: Int
+    userid: Int
+    title: String
+    role: String
+    description: String
+    created_at: String
+    last_update: String
   }
 
   type Query {
@@ -44,11 +33,9 @@ export default buildSchema(`
     signup(firstname: String, lastname: String, email: String, password: String): Token
     isLogged(token: String): Boolean
     user(token: String): User
-    previousSessions(token: String): [PreviousSession]
-    previousAlerts(token: String): [PreviousAlerts]
-    liveStream(token: String): [LiveStream]
-    liveMonitors(token: String): [LiveMonitor]
     userConfirm(uniqid: String, userid: String): UserConfirm
     confirmResend(email: String): Boolean
+    getBoards(token: String): [Board]
+    createBoard(token: String, title: String, description: String): [Board]
   }
 `)
