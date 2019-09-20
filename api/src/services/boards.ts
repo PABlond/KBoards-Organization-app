@@ -57,7 +57,51 @@ const getBoardTickets = async ({
   const user = await auth.user({ token })
   if (user.id) {
     const tickets = await getTickets({ id })
-    console.log(tickets)
+    return tickets
+  }
+}
+
+const deleteRow = async ({
+  token,
+  id,
+  boardId,
+}: {
+  token: string
+  id: String
+  boardId: String
+}) => {
+  const user = await auth.user({ token })
+  if (user.id) {
+    await connection.query(`DELETE FROM board_tickets WHERE id = ?`, [id])
+    console.log({
+      token,
+      id,
+      boardId,
+    })
+    const tickets = await getTickets({ id: boardId })
+    return tickets
+  }
+}
+
+const moveTo = async ({
+  token,
+  id,
+  boardId,
+  to,
+}: {
+  token: string
+  id: String
+  boardId: String
+  to: String
+}) => {
+  const user = await auth.user({ token })
+  if (user.id) {
+    await connection.query(`UPDATE board_tickets SET cat = ? WHERE id = ?`, [
+      to,
+      id,
+    ])
+
+    const tickets = await getTickets({ id: boardId })
     return tickets
   }
 }
@@ -85,4 +129,11 @@ const addRow = async ({
   return await getTickets({ id: boardId })
 }
 
-export default { getBoards, createBoard, getBoardTickets, addRow }
+export default {
+  getBoards,
+  createBoard,
+  getBoardTickets,
+  addRow,
+  deleteRow,
+  moveTo,
+}

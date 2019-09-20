@@ -6,6 +6,8 @@ import AddRow from "./../Modals/AddRow"
 import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
 import { connect } from "react-redux"
 import dispatchAddRow from "./../../actions/dispatchAddRow"
+import dispatchDeleteRow from "./../../actions/dispatchDeleteRow"
+import dispatchMoveTo from './../../actions/dispatchMoveTo'
 
 const Board = ({ boards, boardId }: { boards: any }) => {
   const [onPointer, setOnPointer] = useState<string | null>(null)
@@ -18,11 +20,11 @@ const Board = ({ boards, boardId }: { boards: any }) => {
   }
   const [showEdit, setShowEdit] = useState<IModalData>(initialModalData)
   const [showAdd, setShowAdd] = useState<IModalData>(initialModalData)
-  
+
   useEffect(() => {
-    console.log('RE RENDER', boards.currentBoard)
+    console.log("RE RENDER", boards.currentBoard)
     setData(boards.currentBoard)
-  })
+  }, [boards])
 
   const style = {
     listGroup: {
@@ -55,24 +57,17 @@ const Board = ({ boards, boardId }: { boards: any }) => {
       .map((el: IRow) => (el.name !== task.name ? el : null))
       .filter(Boolean)
 
-  const onMouseUp = (colName: string, i: number) => {
+  const onMouseUp = async (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
+      console.log('MOVE TO: ', onPointer)
       const task = (data as any)[colName][i]
-      console.log(data)
-      setData({
-        ...data,
-        [onPointer]: [...(data as any)[onPointer], task],
-        [colName]: removeRow(colName, task),
-      })
+      await dispatchMoveTo({id: task.id, boardId, to: onPointer})
     }
   }
 
   const deleteItem = (colName: string, i: number) => {
-    const task: IRow = (data as any)[colName][i]
-    setData({
-      ...data,
-      [colName]: removeRow(colName, task),
-    })
+    const {id}: IRow = (data as any)[colName][i]
+    dispatchDeleteRow({ id, boardId })
   }
 
   const addRow = async ({
@@ -88,13 +83,9 @@ const Board = ({ boards, boardId }: { boards: any }) => {
     setShowAdd({ ...showAdd, status: false })
   }
 
-  const moveTo = (from: string, to: string, i: number) => {
+  const moveTo = async (from: string, to: string, i: number) => {
     const task = (data as any)[from][i]
-    setData({
-      ...data,
-      [from]: removeRow(from, task),
-      [to]: [...(data as any)[to], task],
-    })
+    await dispatchMoveTo({id: task.id, boardId, to})
   }
 
   return (

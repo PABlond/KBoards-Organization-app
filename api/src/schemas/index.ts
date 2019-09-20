@@ -48,5 +48,7 @@ export default buildSchema(`
     createBoard(token: String, title: String, description: String): [Board]
     getBoardTickets(token: String, id: String): [Ticket]
     addRow(token: String, name: String, description: String, column: String, boardId: String): [Ticket]
+    deleteRow(token: String, id: Int, boardId: String): [Ticket]
+    moveTo(token: String, id: Int, boardId: String, to: String): [Ticket]
   }
 `)

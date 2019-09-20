@@ -19,6 +19,30 @@ export default {
   getBoardTickets: async ({ token, id }: { token: string; id: String }) => {
     return await boards.getBoardTickets({ token, id })
   },
+  deleteRow: async ({
+    token,
+    id,
+    boardId,
+  }: {
+    token: string
+    id: String
+    boardId: string
+  }) => {
+    return await boards.deleteRow({ token, id, boardId })
+  },
+  moveTo: async ({
+    token,
+    id,
+    boardId,
+    to
+  }: {
+    token: string
+    id: String
+    boardId: string
+    to: String
+  }) => {
+    return await boards.moveTo({ token, id, boardId, to })
+  },
   addRow: async ({
     token,
     name,
@@ -30,7 +54,7 @@ export default {
     name: String
     description: String
     column: String
-    boardId: String
+    boardId: string
   }) => {
     console.log({
       token,
