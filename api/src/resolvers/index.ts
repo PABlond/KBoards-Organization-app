@@ -1,8 +1,4 @@
 import auth, {IUser} from './../services/auth'
-import getPreviousSessions from './../services/getPreviousSessions'
-import getPreviousAlerts from './../services/getPreviousAlerts'
-import getLiveStream from './../services/getLiveStream'
-import getLiveMonitors from './../services/getLiveMonitors'
 
 export default {
     login: async ({ email, password }: IUser) => {
@@ -14,19 +10,6 @@ export default {
     },
     user: async ({token}: {token: string}) => {
         return await auth.user({token})
-    },
-    previousSessions: async ({token}: {token: string}) => {
-        console.log(await getPreviousSessions({token}))
-        return await getPreviousSessions({token})
-    },
-    previousAlerts: async ({token}: {token: string}) => {
-        return await getPreviousAlerts({token})
-    },
-    liveStream: async ({token}: {token: string}) => {
-        return await getLiveStream({token})
-    },
-    liveMonitors: async ({token}: {token: string}) => {
-        return await getLiveMonitors({token})
     },
     userConfirm: async ({uniqid, userid}: {uniqid: string, userid: string}) => {
         return await auth.userConfirm({uniqid, userid})
