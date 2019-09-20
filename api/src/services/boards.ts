@@ -32,7 +32,7 @@ const createBoard = async ({
       `INSERT INTO boards_list (userid, title, description, created_at, last_update, role) VALUES (?, ?, ?, ?, ?, ?)`,
       [user.id, title, description, moment().unix(), moment().unix(), "CREATOR"]
     )
-    .catch(err => {
+    .catch((err: Error) => {
       console.log(err)
       throw err
     })
@@ -51,7 +51,7 @@ const getBoardTickets = async ({
   token,
   id,
 }: {
-  token: String
+  token: string
   id: String
 }) => {
   const user = await auth.user({ token })
