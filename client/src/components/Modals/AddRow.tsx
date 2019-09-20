@@ -28,6 +28,11 @@ export default ({
   const saveChanges = () => {
     const { name, description } = updatedData
     const { colName } = data
+    console.log({
+      name,
+      colName,
+      description,
+    })
     addData({
       name,
       colName,
@@ -35,7 +40,6 @@ export default ({
     })
     setUpdatedData(initialDataValues)
   }
-  console.log(updatedData)
 
   return (
     <Modal show={data.status} onHide={handleClose}>

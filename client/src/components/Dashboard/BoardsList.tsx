@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { Container } from "react-bootstrap"
-import store from "./../../store"
 import { navigate } from "gatsby"
 import { IBoard } from "./../../interfaces/data.interface"
 

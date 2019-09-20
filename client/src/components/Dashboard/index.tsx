@@ -9,6 +9,7 @@ import BoardsList from "./BoardsList"
 import CreateBoard from "./CreateBoard"
 import dispatchBoardsList from "./../../actions/dispatchBoardsList"
 import { IBoard } from "./../../interfaces/data.interface"
+
 const GET_BOARDS = gql`
   query GetBoards($token: String!) {
     getBoards(token: $token) {

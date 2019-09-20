@@ -14,6 +14,7 @@ export default {
         maxHeight: 0,
     },
     boards: {
-        list: []
+        list: [],
+        currentBoard: {}
     }
 }

@@ -28,6 +28,15 @@ export default buildSchema(`
     last_update: String
   }
 
+  type Ticket {
+    id: Int
+    name: String
+    description: String
+    created_by: Int
+    created_at: String
+    cat: String
+  }
+
   type Query {
     login(email: String, password: String): Token,
     signup(firstname: String, lastname: String, email: String, password: String): Token
@@ -37,5 +46,7 @@ export default buildSchema(`
     confirmResend(email: String): Boolean
     getBoards(token: String): [Board]
     createBoard(token: String, title: String, description: String): [Board]
+    getBoardTickets(token: String, id: String): [Ticket]
+    addRow(token: String, name: String, description: String, column: String, boardId: String): [Ticket]
   }
 `)

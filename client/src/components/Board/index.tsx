@@ -1,13 +1,15 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Container, Row, Col, ListGroup, Dropdown } from "react-bootstrap"
 import { FaEllipsisH, FaPlus, FaArrowsAltH } from "react-icons/fa"
 import EditRow from "./../Modals/EditRow"
 import AddRow from "./../Modals/AddRow"
 import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
+import { connect } from "react-redux"
+import dispatchAddRow from "./../../actions/dispatchAddRow"
 
-export default (inputData: IData) => {
+const Board = ({ boards, boardId }: { boards: any }) => {
   const [onPointer, setOnPointer] = useState<string | null>(null)
-  const [data, setData] = useState<IData>(inputData)
+  const [data, setData] = useState<IData>(boards.currentBoard)
   const initialModalData = {
     content: { name: "", description: "" },
     status: false,
@@ -16,6 +18,11 @@ export default (inputData: IData) => {
   }
   const [showEdit, setShowEdit] = useState<IModalData>(initialModalData)
   const [showAdd, setShowAdd] = useState<IModalData>(initialModalData)
+  
+  useEffect(() => {
+    console.log('RE RENDER', boards.currentBoard)
+    setData(boards.currentBoard)
+  })
 
   const style = {
     listGroup: {
@@ -27,7 +34,6 @@ export default (inputData: IData) => {
       },
     },
   }
-
   const editData = (updatedData: {
     name: string
     description: string
@@ -52,6 +58,7 @@ export default (inputData: IData) => {
   const onMouseUp = (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
       const task = (data as any)[colName][i]
+      console.log(data)
       setData({
         ...data,
         [onPointer]: [...(data as any)[onPointer], task],
@@ -68,7 +75,7 @@ export default (inputData: IData) => {
     })
   }
 
-  const addRow = ({
+  const addRow = async ({
     name,
     colName,
     description,
@@ -77,10 +84,7 @@ export default (inputData: IData) => {
     colName: string
     description: string
   }) => {
-    setData({
-      ...data,
-      [colName]: [...(data as any)[colName], { name, description }],
-    })
+    await dispatchAddRow({ name, description, column: colName, boardId })
     setShowAdd({ ...showAdd, status: false })
   }
 
@@ -354,3 +358,12 @@ export default (inputData: IData) => {
     </Container>
   )
 }
+
+function mapStateToProps(state: any) {
+  console.log(state)
+  return {
+    boards: state.boards,
+  }
+}
+
+export default connect(mapStateToProps)(Board)
