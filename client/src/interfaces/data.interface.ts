@@ -1,6 +1,8 @@
 export interface IRow {
+  id?: Number
   name: string
   description: string
+  cat?: string
 }
 
 export interface IData {
@@ -17,6 +19,7 @@ export interface IModalData {
 }
 
 export interface IBoard {
+  id: Number,
   title: string,
   description: string
   created_at: string

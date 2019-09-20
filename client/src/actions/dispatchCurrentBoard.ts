@@ -1,15 +1,16 @@
 import store from "./../store"
 import constants from "./../config/constants"
+import {IRow} from './../interfaces/data.interface'
 
 export default (list: any) => {
   const toDo = list
-    .map((row, i: number) => (row.cat == "toDo" ? row : null))
+    .map((row: IRow) => (row.cat == "toDo" ? row : null))
     .filter(Boolean)
   const progress = list
-    .map((row, i: number) => (row.cat == "progress" ? row : null))
+    .map((row: IRow) => (row.cat == "progress" ? row : null))
     .filter(Boolean)
   const done = list
-    .map((row, i: number) => (row.cat == "done" ? row : null))
+    .map((row: IRow) => (row.cat == "done" ? row : null))
     .filter(Boolean)
   const payload = { toDo, progress, done }
   const { setBoardTickets } = constants

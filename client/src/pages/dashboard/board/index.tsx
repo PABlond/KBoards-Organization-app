@@ -10,9 +10,9 @@ import Loading from "./../../../components/Loading"
 
 const BoardPage = ({ location }: { location: any }) => {
   const [loading, setLoading] = useState<Boolean>(true)
-  const [boardId, setId] = useState(null)
+  const [boardId, setId] = useState<string | string[] | null | undefined>(null)
 
-  const requestTickets = async (token: String, id: Number) => {
+  const requestTickets = async (token: String, id: string | string[] | null | undefined) => {
     const query = gql`
       query GetBoardTickets($token: String, $id: String) {
         getBoardTickets(token: $token, id: $id) {

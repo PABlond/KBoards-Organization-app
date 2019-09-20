@@ -3,7 +3,17 @@ import client from "../config/apolloClient"
 import gql from "graphql-tag"
 import dispatchCurrentBoard from "./dispatchCurrentBoard"
 
-export default async ({ id, name, description, boardId }) => {
+export default async ({
+  id,
+  name,
+  description,
+  boardId,
+}: {
+  id: Number
+  name: String
+  description: String
+  boardId: string | string[] | null | undefined
+}) => {
   const token = getUser()
 
   const query = gql`
@@ -42,5 +52,5 @@ export default async ({ id, name, description, boardId }) => {
     })
     .catch(err => err)
 
-    return dispatchCurrentBoard(response.data.editRow)
+  return dispatchCurrentBoard(response.data.editRow)
 }

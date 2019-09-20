@@ -36,6 +36,8 @@ const Dashboard = ({ boards }: { boards: { list: IBoard[] } }) => {
       console.log("data", data.getBoards)
       dispatchBoardsList(data.getBoards)
       setIsLoading(false)
+    } else if (error) {
+      console.log(error)
     }
   })
 

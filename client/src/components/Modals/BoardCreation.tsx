@@ -43,7 +43,7 @@ export default ({
         },
       })
       .catch(err => err)
-    const { data, loading } = response
+    const { data } = response
     if (data.createBoard) {
       dispatchBoardsList(data.createBoard)
       setUpdatedData(initialDataValues)

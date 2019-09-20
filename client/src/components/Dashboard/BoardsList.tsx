@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Container, Button } from "react-bootstrap"
 import { navigate } from "gatsby"
 import { IBoard } from "./../../interfaces/data.interface"
 
 export default ({ boards }: { boards: IBoard[] }) => {
-  const navigateToBoard = board => {
+  const navigateToBoard = (board: IBoard) => {
     navigate(`/dashboard/board?id=${board.id}`)
   }
 

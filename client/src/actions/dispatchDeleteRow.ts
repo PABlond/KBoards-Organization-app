@@ -1,22 +1,20 @@
 import { getUser } from "./auth"
 import client from "../config/apolloClient"
 import gql from "graphql-tag"
-import dispatchCurrentBoard from './dispatchCurrentBoard'
+import dispatchCurrentBoard from "./dispatchCurrentBoard"
 
-export default async ({ id, boardId }) => {
+export default async ({
+  id,
+  boardId,
+}: {
+  id: Number | undefined
+  boardId: string | string[] | null | undefined
+}) => {
   const token = getUser()
-  console.log({boardId})
+  
   const query = gql`
-    query DeleteRow(
-      $token: String
-      $boardId: String
-      $id: Int
-    ) {
-      deleteRow(
-        token: $token
-        boardId: $boardId
-        id: $id
-      ) {
+    query DeleteRow($token: String, $boardId: String, $id: Int) {
+      deleteRow(token: $token, boardId: $boardId, id: $id) {
         id
         name
         description
@@ -31,7 +29,7 @@ export default async ({ id, boardId }) => {
       variables: {
         token,
         id,
-        boardId
+        boardId,
       },
     })
     .catch(err => err)

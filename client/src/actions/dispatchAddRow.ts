@@ -1,10 +1,14 @@
-import store from "../store"
-import constants from "../config/constants"
 import { getUser } from "./auth"
 import client from "../config/apolloClient"
 import gql from "graphql-tag"
 import dispatchCurrentBoard from './dispatchCurrentBoard'
-export default async ({ name, description, column, boardId }) => {
+
+export default async ({ name, description, column, boardId }: {
+  name: String
+  description: String
+  boardId: string | string[] | null | undefined
+  column: string
+}) => {
   const token = getUser()
   console.log({boardId})
   const query = gql`
