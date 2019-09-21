@@ -92,3 +92,25 @@ body {
     }
   }
 }
+
+#board {
+  padding-top: 2rem;
+  min-height: 98vh;
+  background: $light;
+  .board-column {
+    .container {
+      .list-group {
+        .ticket {
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .is-dragging {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}

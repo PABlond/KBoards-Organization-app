@@ -84,12 +84,11 @@ const LoggedLayout = ({
       navigate("/login")
     }
   })
-
   useEffect(() => {
     updateDimensions()
   }, [])
 
-  return !loading && Object.keys(data).length ? (
+  return !loading && isLogged ? (
     <div id="logged-layout" style={{ maxWidth, maxHeight }}>
       {children}
     </div>

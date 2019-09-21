@@ -31,17 +31,6 @@ const Board = ({
   useEffect(() => {
     setData(boards.currentBoard)
   }, [boards])
-
-  const style = {
-    listGroup: {
-      item: {
-        cursor: "pointer",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
-    },
-  }
   const editData = (updatedData: {
     name: string
     description: string
@@ -56,6 +45,8 @@ const Board = ({
 
   const onMouseUp = async (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
+      console.log('onMouseUp', `ticket-${colName}-${i}`)
+      document.getElementsByClassName(`ticket-${colName}-${i}`)[0].classList.remove("is-dragging")
       const task = (data as any)[colName][i]
       await dispatchMoveTo({ id: task.id, boardId, to: onPointer })
     }
@@ -87,10 +78,14 @@ const Board = ({
   return (
     <Container fluid>
       <Container>
-        <Row className="mt-5">
-          <Col md={4}>
+        <Row id="board">
+          <Col
+            md={4}
+            className="board-column"
+            onDragEnter={() => setOnPointer("toDo")}
+          >
             <Container>
-              <ListGroup onDragEnter={() => setOnPointer("toDo")}>
+              <ListGroup>
                 <ListGroup.Item
                   variant="danger"
                   className="text-center font-weight-bold"
@@ -109,9 +104,10 @@ const Board = ({
                   data.toDo.map((task, i) => (
                     <ListGroup.Item
                       draggable
+                      onDragStart={() => document.getElementsByClassName(`ticket-toDo-${i}`)[0].classList.add("is-dragging")}
                       onDragEnd={() => onMouseUp("toDo", i)}
                       key={i}
-                      style={style.listGroup.item}
+                      className={`ticket ticket-toDo-${i}`}
                     >
                       {task.name}
                       <span style={{ display: "flex" }}>
@@ -168,9 +164,13 @@ const Board = ({
             </Container>
           </Col>
 
-          <Col md={4}>
+          <Col
+            md={4}
+            className="board-column"
+            onDragEnter={() => setOnPointer("progress")}
+          >
             <Container>
-              <ListGroup onDragEnter={() => setOnPointer("progress")}>
+              <ListGroup>
                 <ListGroup.Item
                   variant="warning"
                   className="text-center font-weight-bold"
@@ -193,9 +193,10 @@ const Board = ({
                   data.progress.map((task, i) => (
                     <ListGroup.Item
                       draggable
+                      onDragStart={() => document.getElementsByClassName(`ticket-progress-${i}`)[0].classList.add("is-dragging")}
                       onDragEnd={() => onMouseUp("progress", i)}
                       key={i}
-                      style={style.listGroup.item}
+                      className={`ticket ticket-progress-${i}`}
                     >
                       {task.name}
                       <span style={{ display: "flex" }}>
@@ -251,9 +252,13 @@ const Board = ({
             </Container>
           </Col>
 
-          <Col md={4}>
+          <Col
+            md={4}
+            className="board-column"
+            onDragEnter={() => setOnPointer("done")}
+          >
             <Container>
-              <ListGroup onDragEnter={() => setOnPointer("done")}>
+              <ListGroup>
                 <ListGroup.Item
                   variant="info"
                   className="text-center font-weight-bold"
@@ -272,9 +277,10 @@ const Board = ({
                   data.done.map((task, i) => (
                     <ListGroup.Item
                       draggable
+                      onDragStart={() => document.getElementsByClassName(`ticket-done-${i}`)[0].classList.add("is-dragging")}
                       onDragEnd={() => onMouseUp("done", i)}
                       key={i}
-                      style={style.listGroup.item}
+                      className={`ticket ticket-done-${i}`}
                     >
                       {task.name}
                       <span style={{ display: "flex" }}>

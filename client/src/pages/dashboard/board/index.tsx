@@ -7,12 +7,16 @@ import gql from "graphql-tag"
 import dispatchCurrentBoard from "./../../../actions/dispatchCurrentBoard"
 import Board from "./../../../components/Board"
 import Loading from "./../../../components/Loading"
+import Layout from "./../../../components/Layout/index.logged"
 
 const BoardPage = ({ location }: { location: any }) => {
   const [loading, setLoading] = useState<Boolean>(true)
   const [boardId, setId] = useState<string | string[] | null | undefined>(null)
 
-  const requestTickets = async (token: String, id: string | string[] | null | undefined) => {
+  const requestTickets = async (
+    token: String,
+    id: string | string[] | null | undefined
+  ) => {
     const query = gql`
       query GetBoardTickets($token: String, $id: String) {
         getBoardTickets(token: $token, id: $id) {
@@ -33,7 +37,7 @@ const BoardPage = ({ location }: { location: any }) => {
       })
       .catch(err => err)
 
-      dispatchCurrentBoard(response.data.getBoardTickets)
+    dispatchCurrentBoard(response.data.getBoardTickets)
     setLoading(false)
   }
   useEffect(() => {
@@ -45,7 +49,9 @@ const BoardPage = ({ location }: { location: any }) => {
 
   return !loading ? (
     <>
-      <Board boardId={boardId} />
+      <Layout>
+        <Board boardId={boardId} />
+      </Layout>
     </>
   ) : (
     <Loading />
