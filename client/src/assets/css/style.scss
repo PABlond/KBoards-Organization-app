@@ -1,0 +1,116 @@
+$dark: #23374d;
+$grey: #e5e5e5;
+$light: #fff;
+$blue: #1089ff;
+
+#dropdown-basic::after {
+  content: none !important;
+}
+
+body {
+  background: $dark;
+}
+
+#auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  form {
+    background: $light;
+    width: 80%;
+    padding: 3rem;
+
+    #auth-heading {
+      padding-bottom: 1rem;
+    }
+
+    button {
+      background: $blue;
+    }
+  }
+}
+
+#logged-layout {
+  margin: 0 auto;
+
+  #logged-container {
+    background: $light;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    #main-title {
+      text-align: center;
+    }
+
+    #second-title {
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    #create-board {
+      color: $light;
+      background-color: $dark;
+      box-shadow: none;
+      border: none;
+      display: table-cell;
+      padding: 1rem;
+      height: 80px;
+      text-align: center;
+      vertical-align: middle;
+      transition-property: background-color, border-color, box-shadow;
+      transition-duration: 85ms;
+      transition-timing-function: ease;
+      transition: 0.7s;
+
+      &:hover {
+        background: $grey;
+        color: $dark;
+        border: 1px solid $dark;
+      }
+    }
+
+    #personal-boards {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+        margin-right: -15px;
+        margin-left: -15px;
+        
+        div {
+            button {
+                width: 100%;
+                height: 80px;
+            }
+        }
+    }
+  }
+}
+
+#board {
+  padding-top: 2rem;
+  min-height: 98vh;
+  background: $light;
+  .board-column {
+    .container {
+      .list-group {
+        .ticket {
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .is-dragging {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@ export default buildSchema(`
     firstname: String
     lastname: String
     is_check: Boolean
+    token: String
     isLogged: Boolean
   }
 

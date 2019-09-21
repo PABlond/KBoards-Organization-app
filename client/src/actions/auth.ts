@@ -11,7 +11,7 @@ export const getUser = () => {
     return ''
 }
 
-const setUser = (token: string) => window.localStorage.setItem('babycam', token)
+export const setUser = (token: string) => window.localStorage.setItem('babycam', token)
 
 export const handleLogin = (token: string): Boolean => {
     if (!isBrowser) return false

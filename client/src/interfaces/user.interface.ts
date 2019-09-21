@@ -10,4 +10,5 @@ export interface UserType {
     liveSessions: LiveSession[]
     previousSessions: []
     previousAlerts: []
+    token?: string
 }

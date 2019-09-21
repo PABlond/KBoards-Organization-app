@@ -1,5 +1,5 @@
 import React from "react"
-import { Container, Button } from "react-bootstrap"
+import { Container, Button, Col } from "react-bootstrap"
 import { navigate } from "gatsby"
 import { IBoard } from "./../../interfaces/data.interface"
 
@@ -10,15 +10,15 @@ export default ({ boards }: { boards: IBoard[] }) => {
 
   return (
     <>
-      <h3>Boards list:</h3>
+      <h3 id="second-title">Personal Boards</h3>
       {boards.length ? (
-        <Container>
+        <Container id="personal-boards">
           {boards.map((board: IBoard, i: number) => (
-            <p key={i}>
+            <Col md={3} key={i}>
               <Button onClick={() => navigateToBoard(board)}>
                 {board.title}
               </Button>
-            </p>
+            </Col>
           ))}
         </Container>
       ) : (

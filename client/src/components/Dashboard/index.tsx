@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/react-hooks"
 import { getUser } from "./../../actions/auth"
 import Loading from "./../Loading"
 import { connect } from "react-redux"
-
+import { Container } from "react-bootstrap"
 import BoardsList from "./BoardsList"
 import CreateBoard from "./CreateBoard"
 import dispatchBoardsList from "./../../actions/dispatchBoardsList"
@@ -30,10 +30,7 @@ const Dashboard = ({ boards }: { boards: { list: IBoard[] } }) => {
   const [isLoading, setIsLoading] = useState<Boolean>(true)
 
   useEffect(() => {
-    if (loading) {
-      console.log("loading")
-    } else if (data.getBoards && isLoading) {
-      console.log("data", data.getBoards)
+     if (data.getBoards && isLoading) {
       dispatchBoardsList(data.getBoards)
       setIsLoading(false)
     } else if (error) {
@@ -42,11 +39,11 @@ const Dashboard = ({ boards }: { boards: { list: IBoard[] } }) => {
   })
 
   return !isLoading ? (
-    <>
-      <h1>Dashboard</h1>
+    <Container id="logged-container">
+      <h1 id="main-title">Dashboard</h1>
       <CreateBoard />
       <BoardsList boards={boards.list} />
-    </>
+    </Container>
   ) : (
     <Loading />
   )
