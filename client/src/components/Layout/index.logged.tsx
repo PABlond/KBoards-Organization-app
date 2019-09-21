@@ -6,7 +6,8 @@ import { connect } from "react-redux"
 import { ConstantType } from "./../../interfaces/constants.interface"
 import { UserType } from "../../interfaces/user.interface"
 import constants from "../../config/constants"
-import { getUser } from "./../../actions/auth"
+import { getUser, setUser } from "./../../actions/auth"
+import Loading from "./../Loading"
 
 const mapStateToProps = (state: any) => {
   const { maxWidth, maxHeight } = state.nav
@@ -31,7 +32,8 @@ const mapDispatchToProps = (dispatch: any) => {
       })
     },
     dispacthUserInfo: (user: UserType) => {
-      const { id, email, lastname, firstname } = user
+      const { id, email, lastname, firstname, token } = user
+      setUser(token as string)
       const { userInfo }: { userInfo: ConstantType } = constants
       dispatch({
         type: userInfo.name,
@@ -50,6 +52,7 @@ const IS_LOGGED = gql`
       lastname
       is_check
       isLogged
+      token
     }
   }
 `
@@ -72,7 +75,6 @@ const LoggedLayout = ({
 
     // When request is over :
     if (Object.keys(data).length) {
-      console.log(data)
       if (!isLogged) navigate("/login")
       if (!data.user.is_check)
         navigate(`/user/not_confirm?email=${data.user.email}`)
@@ -88,9 +90,11 @@ const LoggedLayout = ({
   }, [])
 
   return !loading && Object.keys(data).length ? (
-    <div style={{ margin: `0 auto`, maxWidth, maxHeight }}>{children}</div>
+    <div id="logged-layout" style={{ maxWidth, maxHeight }}>
+      {children}
+    </div>
   ) : (
-    <p>Loading ...</p>
+    <Loading />
   )
 }
 
