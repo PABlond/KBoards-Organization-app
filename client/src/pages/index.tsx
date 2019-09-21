@@ -1,9 +1,11 @@
 import React from "react"
-
+import Nav from "./../components/Navs"
 
 export default () => {
-  
   return (
-    <h1>Home page</h1>
+    <>
+      <Nav />
+      <h1>Home page</h1>
+    </>
   )
 }
