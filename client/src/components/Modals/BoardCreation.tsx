@@ -4,7 +4,6 @@ import client from "./../../config/apolloClient"
 import { getUser } from "./../../actions/auth"
 import gql from "graphql-tag"
 import dispatchBoardsList from "./../../actions/dispatchBoardsList"
-import store from './../../store'
 
 export default ({
   show,
@@ -48,10 +47,7 @@ export default ({
       dispatchBoardsList(data.createBoard)
       setUpdatedData(initialDataValues)
       handleClose()
-      console.log(store.getState().boards)
     }
-    // setUpdatedData(initialDataValues)
-    // handleClose()
   }
 
   return (

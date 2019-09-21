@@ -4,7 +4,7 @@ import { graphql, navigate } from "gatsby"
 import Img from "gatsby-image"
 import { Container, Row, Col, Button } from "react-bootstrap"
 
-export default ({ data }) => {
+export default ({ data }: any) => {
   console.log(data)
   return (
     <>
@@ -41,7 +41,9 @@ export default ({ data }) => {
                 vacation, KBoard helps your team stay organized.
               </p>
 
-              <Button onClick={() => navigate('/signup')}>Start doing -></Button>
+              <Button onClick={() => navigate("/signup")}>
+                Start doing ->
+              </Button>
             </Col>
           </Row>
         </Container>

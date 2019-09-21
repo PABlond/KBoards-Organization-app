@@ -5,12 +5,7 @@ import EditRow from "./../Modals/EditRow"
 import AddRow from "./../Modals/AddRow"
 import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
 import { connect } from "react-redux"
-import dispatchAddRow from "./../../actions/dispatchAddRow"
-import dispatchDeleteRow from "./../../actions/dispatchDeleteRow"
-import dispatchMoveTo from "./../../actions/dispatchMoveTo"
-import dispatchEditRow from "./../../actions/dispatchEditRow"
-import dispatchCurrentBoard from "./../../actions/dispatchCurrentBoard"
-import constants from "./../../config/constants"
+import Loading from "./../Loading"
 import { socket } from "./../../config/sockets"
 
 const Board = ({
@@ -30,13 +25,9 @@ const Board = ({
   }
   const [showEdit, setShowEdit] = useState<IModalData>(initialModalData)
   const [showAdd, setShowAdd] = useState<IModalData>(initialModalData)
+  const [waitingResponse, setWaitingResponse] = useState<Boolean>(false)
 
-  const handler = async (newBoards: any) => {
-    console.log("Receive data")
-    await dispatchCurrentBoard(newBoards)
-  }
-
-  const editData = (updatedData: {
+  const editRow = (updatedData: {
     name: string
     description: string
     colName: string
@@ -44,25 +35,28 @@ const Board = ({
   }) => {
     const { name, description, colName, i } = updatedData
     const task = (data as any)[colName][i]
-    dispatchEditRow({ id: task.id, name, description, boardId })
+    socket.emit("editRow", { id: task.id, name, description, boardId })
     setShowEdit(initialModalData)
   }
+
+  const removeRow = (colName: string, task: IRow | { name: string }) =>
+    (data as any)[colName]
+      .map((el: IRow) => (el.name !== task.name ? el : null))
+      .filter(Boolean)
 
   const onMouseUp = async (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
       document
         .getElementsByClassName(`ticket-${colName}-${i}`)[0]
         .classList.remove("is-dragging")
-      const task = (data as any)[colName][i]
-      socket.emit("moveTo", { id: task.id, boardId, to: onPointer })
-      socket.on("tickets", handler)
-      // await dispatchMoveTo({ id: task.id, boardId, to: onPointer })
+      moveTo(colName, i)
     }
   }
 
   const deleteItem = (colName: string, i: number) => {
     const { id }: IRow = (data as any)[colName][i]
-    dispatchDeleteRow({ id, boardId })
+    const task = (data as any)[colName][i]
+    socket.emit("deleteRow", { id, name: task.name, colName })
   }
 
   const addRow = async ({
@@ -74,30 +68,113 @@ const Board = ({
     colName: string
     description: string
   }) => {
-    await dispatchAddRow({ name, description, column: colName, boardId })
+    socket.emit("addRow", {
+      name,
+      boardId,
+      description,
+      column: colName,
+    })
     setShowAdd({ ...showAdd, status: false })
   }
 
-  const moveTo = async (from: string, to: string, i: number) => {
-    const task = (data as any)[from][i]
-    await dispatchMoveTo({ id: task.id, boardId, to })
+  const moveTo = async (colName: string, i: number, to = onPointer) => {
+    const { id, name, description } = (data as any)[colName][i]
+    socket.emit("moveTo", {
+      id,
+      name,
+      description,
+      colName,
+      to,
+    })
+    setWaitingResponse(true)
+    // const task = (data as any)[from][i]
+    // await dispatchMoveTo({ id: task.id, boardId, to })
   }
 
   useEffect(() => {
     setData(boards.currentBoard)
+
     // socket.on("tickets", handler)
   }, [boards])
 
   useEffect(() => {
-    socket.on("tickets", handler)
-  }, [])
+    socket.on(
+      "addRow",
+      ({
+        name,
+        description,
+        column,
+      }: {
+        name: String
+        description: String
+        column: string
+      }) => {
+        setData({
+          ...data,
+          [column]: [...(data as any)[column], { name, description }],
+        })
+        setWaitingResponse(false)
+      }
+    )
 
-  console.log(data)
+    socket.on(
+      "moveTo",
+      ({
+        to,
+        colName,
+        name,
+        description,
+      }: {
+        to: string
+        colName: string
+        name: string
+        description: string
+      }) => {
+        setData({
+          ...data,
+          [to]: [...(data as any)[to], { name, description }],
+          [colName]: removeRow(colName, { name }),
+        })
+        setWaitingResponse(false)
+      }
+    )
+
+    socket.emit("editRow", ({i, name, description, colName}: {
+      id: string
+      name: string
+      description: string
+      i: Number
+      colName: string
+    }) => {
+      setData({
+        ...data,
+        [colName]: (data as any)[colName].map((row: IRow, j: number) =>
+          i !== j ? row : { name, description }
+        ),
+      })
+    })
+
+    socket.on(
+      "deleteRow",
+      ({ colName, name }: { colName: string; name: string }) => {
+        setData({
+          ...data,
+          [colName]: removeRow(colName, { name }),
+        })
+      }
+    )
+  })
 
   return (
     <Container fluid>
+      {waitingResponse && (
+        <Container id="loading-temp">
+          <Loading />
+        </Container>
+      )}
+
       <Container>
-        <Row id="board">
+        <Row id="board" className={waitingResponse && "loading-active"}>
           <Col
             md={4}
             className="board-column"
@@ -140,12 +217,12 @@ const Board = ({
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
                             <Dropdown.Item
-                              onClick={() => moveTo("toDo", "progress", i)}
+                              onClick={() => moveTo("toDo", i, "progress")}
                             >
                               Doing
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() => moveTo("toDo", "done", i)}
+                              onClick={() => moveTo("toDo", i, "done")}
                             >
                               Done
                             </Dropdown.Item>
@@ -233,12 +310,12 @@ const Board = ({
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
                             <Dropdown.Item
-                              onClick={() => moveTo("progress", "toDo", i)}
+                              onClick={() => moveTo("progress", i, "toDo")}
                             >
                               To do
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() => moveTo("progress", "done", i)}
+                              onClick={() => moveTo("progress", i, "done")}
                             >
                               Done
                             </Dropdown.Item>
@@ -321,12 +398,12 @@ const Board = ({
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
                             <Dropdown.Item
-                              onClick={() => moveTo("done", "toDo", i)}
+                              onClick={() => moveTo("done", i, "toDo")}
                             >
                               To do
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() => moveTo("done", "progress", i)}
+                              onClick={() => moveTo("done", i, "progress")}
                             >
                               Doing
                             </Dropdown.Item>
@@ -372,7 +449,7 @@ const Board = ({
       <EditRow
         handleClose={() => setShowEdit({ ...showEdit, status: false })}
         data={showEdit}
-        editData={editData}
+        editData={editRow}
       />
       <AddRow
         handleClose={() => setShowAdd({ ...showAdd, status: false })}
@@ -389,29 +466,4 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    dispatchCurrentBoard: (list: any) => {
-      const toDo = list
-        .map((row: IRow) => (row.cat == "toDo" ? row : null))
-        .filter(Boolean)
-      const progress = list
-        .map((row: IRow) => (row.cat == "progress" ? row : null))
-        .filter(Boolean)
-      const done = list
-        .map((row: IRow) => (row.cat == "done" ? row : null))
-        .filter(Boolean)
-      const payload = { toDo, progress, done }
-      console.log(payload)
-      const { setBoardTickets } = constants
-      return dispatch({
-        type: setBoardTickets.name,
-        payload,
-      })
-    },
-  }
-}
-
-export default connect(
-  mapStateToProps,
-)(Board)
+export default connect(mapStateToProps)(Board)
