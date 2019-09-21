@@ -7,8 +7,83 @@ $blue: #1089ff;
   content: none !important;
 }
 
+
+
 body {
   background: $dark;
+}
+
+#nav {
+  background: $blue;
+  color: $light
+}
+
+// ****************************************
+// ****************************************
+//               Homepage
+// ****************************************
+// ****************************************
+
+#hero {
+  background: $blue;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  .container {
+    .row {
+      align-items: center;
+      color: $light;
+
+      div {
+        h1 {
+          font-size: 2.5rem
+        }
+      }
+
+      
+    }
+  }
+}
+
+#collaborate-1 {
+  background: $light;
+  padding-top: 3rem;
+  .container {
+    .row {
+      align-items: center;
+      color: $dark;
+
+      div {
+        h3 {
+          font-size: 1.5rem
+        }
+
+        p {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}
+
+#collaborate-2 {
+  background: $light;
+  padding-top: 3rem;
+  .container {
+    .row {
+      align-items: center;
+      color: $dark;
+
+      div {
+        h3 {
+          font-size: 1.5rem
+        }
+
+        p {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
 }
 
 #auth-container {
