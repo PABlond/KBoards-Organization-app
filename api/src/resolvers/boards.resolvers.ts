@@ -13,7 +13,6 @@ export default {
     title: string
     description: string
   }) => {
-    console.log("CREATE A BOARD")
     return await boards.createBoard({ token, title, description })
   },
   getBoardTickets: async ({ token, id }: { token: string; id: String }) => {
@@ -69,13 +68,6 @@ export default {
     column: String
     boardId: string
   }) => {
-    console.log({
-      token,
-      name,
-      description,
-      column,
-      boardId,
-    })
     return await boards.addRow({
       token,
       name,

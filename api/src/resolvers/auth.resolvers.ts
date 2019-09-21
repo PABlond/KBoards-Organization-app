@@ -9,7 +9,6 @@ export default {
         return await auth.signup({ firstname, lastname, email, password })
     },
     user: async ({token}: {token: string}) => {
-        console.log( await auth.user({token}))
         return await auth.user({token})
     },
     userConfirm: async ({uniqid, userid}: {uniqid: string, userid: string}) => {

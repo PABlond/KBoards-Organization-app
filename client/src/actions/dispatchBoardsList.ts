@@ -4,7 +4,9 @@ import { IBoard } from "./../interfaces/data.interface"
 
 export default (list: IBoard[]) => {
   const { setBoardsList } = constants
-  store.dispatch({
+  console.log('dispatched')
+  
+  return store.dispatch({
     type: setBoardsList.name,
     payload: list,
   })

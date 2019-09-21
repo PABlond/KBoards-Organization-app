@@ -33,8 +33,8 @@ const Dashboard = ({ boards }: { boards: { list: IBoard[] } }) => {
      if (data.getBoards && isLoading) {
       dispatchBoardsList(data.getBoards)
       setIsLoading(false)
-    } else if (error) {
-      console.log(error)
+    } else if (error || loading) {
+      console.log(error, loading)
     }
   })
 

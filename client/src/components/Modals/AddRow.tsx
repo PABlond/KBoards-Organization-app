@@ -28,11 +28,6 @@ export default ({
   const saveChanges = () => {
     const { name, description } = updatedData
     const { colName } = data
-    console.log({
-      name,
-      colName,
-      description,
-    })
     addData({
       name,
       colName,

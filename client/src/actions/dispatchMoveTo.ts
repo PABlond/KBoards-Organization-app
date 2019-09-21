@@ -36,6 +36,5 @@ export default async ({
       },
     })
     .catch(err => err)
-
   return dispatchCurrentBoard(response.data.moveTo)
 }

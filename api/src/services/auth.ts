@@ -131,7 +131,6 @@ const login = async ({ email, password }: IUser) => {
 
 const user = async ({ token }: { token: string }) => {
   const { JWT_KEY } = process.env
-  // console.log(JWT_KEY)
   try {
     const decoded = jwt.verify(token, JWT_KEY)
     const { firstname, lastname, email, id }: any = decoded
@@ -139,7 +138,6 @@ const user = async ({ token }: { token: string }) => {
       `SELECT id, email, firstname, lastname, is_check FROM users WHERE email = ? AND firstname = ? AND lastname = ? and id = ?`,
       [email.toLowerCase(), firstname, lastname, id]
     )
-    console.log('token')
     const tokenRegen = jwt.sign(
       {
         id,
