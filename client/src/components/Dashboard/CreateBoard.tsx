@@ -9,7 +9,7 @@ export default () => {
 
   return (
     <>
-      <Button variant="primary" onClick={() => setShow(true)}>
+      <Button id="create-board" onClick={() => setShow(true)}>
         Create a board
       </Button>
 

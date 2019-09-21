@@ -38,6 +38,10 @@ body {
   #logged-container {
     background: $light;
     padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     #main-title {
       text-align: center;
@@ -49,18 +53,25 @@ body {
     }
 
     #create-board {
-      background-color: $grey;
+      color: $light;
+      background-color: $dark;
       box-shadow: none;
-      color: $dark;
       border: none;
       display: table-cell;
+      padding: 1rem;
       height: 80px;
       text-align: center;
       vertical-align: middle;
-      width: inherit;
       transition-property: background-color, border-color, box-shadow;
       transition-duration: 85ms;
       transition-timing-function: ease;
+      transition: 0.7s;
+
+      &:hover {
+        background: $grey;
+        color: $dark;
+        border: 1px solid $dark;
+      }
     }
 
     #personal-boards {

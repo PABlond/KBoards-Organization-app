@@ -10,7 +10,13 @@ import dispatchDeleteRow from "./../../actions/dispatchDeleteRow"
 import dispatchMoveTo from "./../../actions/dispatchMoveTo"
 import dispatchEditRow from "./../../actions/dispatchEditRow"
 
-const Board = ({ boards, boardId }: { boards: {currentBoard: any}, boardId: string | string[] | null | undefined }) => {
+const Board = ({
+  boards,
+  boardId,
+}: {
+  boards: { currentBoard: any }
+  boardId: string | string[] | null | undefined
+}) => {
   const [onPointer, setOnPointer] = useState<string | null>(null)
   const [data, setData] = useState<IData>(boards.currentBoard)
   const initialModalData = {
@@ -340,7 +346,7 @@ const Board = ({ boards, boardId }: { boards: {currentBoard: any}, boardId: stri
   )
 }
 
-function mapStateToProps(state: any) {
+const mapStateToProps = (state: any) => {
   return {
     boards: state.boards,
   }

@@ -25,6 +25,11 @@ export default ({
     name: "",
     description: "",
   }
+  const initialDataState = {
+    name: false,
+    description: false,
+  }
+  const [editState, setEditState] = useState<any>(initialDataState)
   const [updatedData, setUpdatedData] = useState(initialDataValues)
   const { colName, i } = data
 
@@ -38,6 +43,7 @@ export default ({
       name: updatedData.name.length ? updatedData.name : data.content.name,
     })
     setUpdatedData(initialDataValues)
+    setEditState(initialDataState)
   }
 
   return (
@@ -46,23 +52,38 @@ export default ({
         <Modal.Title>{data.content.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form.Control
-          type="text"
-          placeholder={data.content.name}
-          value={updatedData.name}
-          onChange={(e: any) =>
-            setUpdatedData({ ...updatedData, name: e.target.value })
-          }
-        />
-        <Form.Control
-          as="textarea"
-          rows="3"
-          placeholder={data.content.description}
-          value={updatedData.description}
-          onChange={(e: any) =>
-            setUpdatedData({ ...updatedData, description: e.target.value })
-          }
-        />
+        {editState.name ? (
+          <Form.Control
+            type="text"
+            placeholder={data.content.name}
+            value={updatedData.name}
+            onChange={(e: any) =>
+              setUpdatedData({ ...updatedData, name: e.target.value })
+            }
+          />
+        ) : (
+          <p onClick={() => setEditState({ ...editState, name: true })}>
+            {data.content.name}
+          </p>
+        )}
+        {editState.description ? (
+          <Form.Control
+            as="textarea"
+            rows="3"
+            className="edit-description"
+            placeholder={data.content.description}
+            value={updatedData.description}
+            onChange={(e: any) =>
+              setUpdatedData({ ...updatedData, description: e.target.value })
+            }
+          />
+        ) : (
+          <p onClick={() => setEditState({ ...editState, description: true })}>
+            {data.content.description.length
+              ? data.content.description
+              : "No description"}
+          </p>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
