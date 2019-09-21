@@ -95,6 +95,7 @@ const moveTo = async ({
   to: String
 }) => {
   const user = await auth.user({ token })
+  console.log(to)
   if (user.id) {
     await connection.query(`UPDATE board_tickets SET cat = ? WHERE id = ?`, [
       to,
@@ -150,7 +151,6 @@ const editRow = async ({
     )
 
     const tickets = await getTickets({ id: boardId })
-    console.log(tickets)
     return tickets
   }
 }
@@ -163,4 +163,5 @@ export default {
   deleteRow,
   moveTo,
   editRow,
+  getTickets
 }

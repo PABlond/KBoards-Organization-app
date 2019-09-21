@@ -13,8 +13,9 @@ export default (list: any) => {
     .map((row: IRow) => (row.cat == "done" ? row : null))
     .filter(Boolean)
   const payload = { toDo, progress, done }
+  console.log(payload)
   const { setBoardTickets } = constants
-  store.dispatch({
+  return store.dispatch({
     type: setBoardTickets.name,
     payload,
   })

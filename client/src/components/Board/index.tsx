@@ -9,6 +9,9 @@ import dispatchAddRow from "./../../actions/dispatchAddRow"
 import dispatchDeleteRow from "./../../actions/dispatchDeleteRow"
 import dispatchMoveTo from "./../../actions/dispatchMoveTo"
 import dispatchEditRow from "./../../actions/dispatchEditRow"
+import dispatchCurrentBoard from "./../../actions/dispatchCurrentBoard"
+import constants from "./../../config/constants"
+import { socket } from "./../../config/sockets"
 
 const Board = ({
   boards,
@@ -28,9 +31,11 @@ const Board = ({
   const [showEdit, setShowEdit] = useState<IModalData>(initialModalData)
   const [showAdd, setShowAdd] = useState<IModalData>(initialModalData)
 
-  useEffect(() => {
-    setData(boards.currentBoard)
-  }, [boards])
+  const handler = async (newBoards: any) => {
+    console.log("Receive data")
+    await dispatchCurrentBoard(newBoards)
+  }
+
   const editData = (updatedData: {
     name: string
     description: string
@@ -45,10 +50,13 @@ const Board = ({
 
   const onMouseUp = async (colName: string, i: number) => {
     if (onPointer && onPointer !== colName) {
-      console.log('onMouseUp', `ticket-${colName}-${i}`)
-      document.getElementsByClassName(`ticket-${colName}-${i}`)[0].classList.remove("is-dragging")
+      document
+        .getElementsByClassName(`ticket-${colName}-${i}`)[0]
+        .classList.remove("is-dragging")
       const task = (data as any)[colName][i]
-      await dispatchMoveTo({ id: task.id, boardId, to: onPointer })
+      socket.emit("moveTo", { id: task.id, boardId, to: onPointer })
+      socket.on("tickets", handler)
+      // await dispatchMoveTo({ id: task.id, boardId, to: onPointer })
     }
   }
 
@@ -74,6 +82,17 @@ const Board = ({
     const task = (data as any)[from][i]
     await dispatchMoveTo({ id: task.id, boardId, to })
   }
+
+  useEffect(() => {
+    setData(boards.currentBoard)
+    // socket.on("tickets", handler)
+  }, [boards])
+
+  useEffect(() => {
+    socket.on("tickets", handler)
+  }, [])
+
+  console.log(data)
 
   return (
     <Container fluid>
@@ -104,7 +123,11 @@ const Board = ({
                   data.toDo.map((task, i) => (
                     <ListGroup.Item
                       draggable
-                      onDragStart={() => document.getElementsByClassName(`ticket-toDo-${i}`)[0].classList.add("is-dragging")}
+                      onDragStart={() =>
+                        document
+                          .getElementsByClassName(`ticket-toDo-${i}`)[0]
+                          .classList.add("is-dragging")
+                      }
                       onDragEnd={() => onMouseUp("toDo", i)}
                       key={i}
                       className={`ticket ticket-toDo-${i}`}
@@ -193,7 +216,11 @@ const Board = ({
                   data.progress.map((task, i) => (
                     <ListGroup.Item
                       draggable
-                      onDragStart={() => document.getElementsByClassName(`ticket-progress-${i}`)[0].classList.add("is-dragging")}
+                      onDragStart={() =>
+                        document
+                          .getElementsByClassName(`ticket-progress-${i}`)[0]
+                          .classList.add("is-dragging")
+                      }
                       onDragEnd={() => onMouseUp("progress", i)}
                       key={i}
                       className={`ticket ticket-progress-${i}`}
@@ -277,7 +304,11 @@ const Board = ({
                   data.done.map((task, i) => (
                     <ListGroup.Item
                       draggable
-                      onDragStart={() => document.getElementsByClassName(`ticket-done-${i}`)[0].classList.add("is-dragging")}
+                      onDragStart={() =>
+                        document
+                          .getElementsByClassName(`ticket-done-${i}`)[0]
+                          .classList.add("is-dragging")
+                      }
                       onDragEnd={() => onMouseUp("done", i)}
                       key={i}
                       className={`ticket ticket-done-${i}`}
@@ -358,4 +389,29 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-export default connect(mapStateToProps)(Board)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    dispatchCurrentBoard: (list: any) => {
+      const toDo = list
+        .map((row: IRow) => (row.cat == "toDo" ? row : null))
+        .filter(Boolean)
+      const progress = list
+        .map((row: IRow) => (row.cat == "progress" ? row : null))
+        .filter(Boolean)
+      const done = list
+        .map((row: IRow) => (row.cat == "done" ? row : null))
+        .filter(Boolean)
+      const payload = { toDo, progress, done }
+      console.log(payload)
+      const { setBoardTickets } = constants
+      return dispatch({
+        type: setBoardTickets.name,
+        payload,
+      })
+    },
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(Board)
