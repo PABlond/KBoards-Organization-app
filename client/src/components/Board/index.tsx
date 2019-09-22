@@ -3,7 +3,13 @@ import { Container, Row, Col, ListGroup, Dropdown } from "react-bootstrap"
 import { FaEllipsisH, FaPlus, FaArrowsAltH } from "react-icons/fa"
 import EditRow from "./../Modals/EditRow"
 import AddRow from "./../Modals/AddRow"
-import { IData, IRow, IModalData } from "./../../interfaces/data.interface"
+import {
+  IData,
+  IRow,
+  IModalData,
+  IBoardState,
+  IColumn,
+} from "./../../interfaces/data.interface"
 import { connect } from "react-redux"
 import Loading from "./../Loading"
 import { socket } from "./../../config/sockets"
@@ -12,7 +18,7 @@ const Board = ({
   boards,
   boardId,
 }: {
-  boards: { currentBoard: any }
+  boards: IBoardState
   boardId: string | string[] | null | undefined
 }) => {
   const [onPointer, setOnPointer] = useState<string | null>(null)
@@ -87,14 +93,10 @@ const Board = ({
       to,
     })
     setWaitingResponse(true)
-    // const task = (data as any)[from][i]
-    // await dispatchMoveTo({ id: task.id, boardId, to })
   }
 
   useEffect(() => {
     setData(boards.currentBoard)
-
-    // socket.on("tickets", handler)
   }, [boards])
 
   useEffect(() => {
@@ -109,6 +111,11 @@ const Board = ({
         description: String
         column: string
       }) => {
+        console.log({
+          name,
+          description,
+          column,
+        })
         setData({
           ...data,
           [column]: [...(data as any)[column], { name, description }],
@@ -130,6 +137,13 @@ const Board = ({
         name: string
         description: string
       }) => {
+        console.log({
+          to,
+          colName,
+          name,
+          description,
+           data
+        })
         setData({
           ...data,
           [to]: [...(data as any)[to], { name, description }],
@@ -139,20 +153,28 @@ const Board = ({
       }
     )
 
-    socket.emit("editRow", ({i, name, description, colName}: {
-      id: string
-      name: string
-      description: string
-      i: Number
-      colName: string
-    }) => {
-      setData({
-        ...data,
-        [colName]: (data as any)[colName].map((row: IRow, j: number) =>
-          i !== j ? row : { name, description }
-        ),
-      })
-    })
+    socket.emit(
+      "editRow",
+      ({
+        i,
+        name,
+        description,
+        colName,
+      }: {
+        id: string
+        name: string
+        description: string
+        i: Number
+        colName: string
+      }) => {
+        setData({
+          ...data,
+          [colName]: (data as any)[colName].map((row: IRow, j: number) =>
+            i !== j ? row : { name, description }
+          ),
+        })
+      }
+    )
 
     socket.on(
       "deleteRow",
@@ -165,6 +187,8 @@ const Board = ({
     )
   })
 
+  const { columns } = boards
+
   return (
     <Container fluid>
       {waitingResponse && (
@@ -175,274 +199,115 @@ const Board = ({
 
       <Container>
         <Row id="board" className={waitingResponse && "loading-active"}>
-          <Col
-            md={4}
-            className="board-column"
-            onDragEnter={() => setOnPointer("toDo")}
-          >
-            <Container>
-              <ListGroup>
-                <ListGroup.Item
-                  variant="danger"
-                  className="text-center font-weight-bold"
-                >
-                  To do{" "}
-                  <span
-                    style={{ float: "right" }}
-                    onClick={() =>
-                      setShowAdd({ ...showAdd, colName: "toDo", status: true })
-                    }
-                  >
-                    <FaPlus />
-                  </span>
-                </ListGroup.Item>
-                {data.toDo &&
-                  data.toDo.map((task, i) => (
-                    <ListGroup.Item
-                      draggable
-                      onDragStart={() =>
-                        document
-                          .getElementsByClassName(`ticket-toDo-${i}`)[0]
-                          .classList.add("is-dragging")
-                      }
-                      onDragEnd={() => onMouseUp("toDo", i)}
-                      key={i}
-                      className={`ticket ticket-toDo-${i}`}
-                    >
-                      {task.name}
-                      <span style={{ display: "flex" }}>
-                        <Dropdown>
-                          <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            <FaArrowsAltH />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() => moveTo("toDo", i, "progress")}
-                            >
-                              Doing
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => moveTo("toDo", i, "done")}
-                            >
-                              Done
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown>
-                          <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            <FaEllipsisH />{" "}
-                          </Dropdown.Toggle>
+          {columns.map((column: IColumn, k: number) => {
+            const otherColumns = columns
+              .map((col: IColumn, l: Number) => (l !== k ? col : null))
+              .filter(Boolean)
 
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() =>
-                                setShowEdit({
-                                  ...showEdit,
-                                  content: data["toDo"]
-                                    ? data["toDo"][i]
-                                    : { name: "", description: "" },
-                                  status: true,
-                                  colName: "toDo",
-                                  i,
-                                })
-                              }
-                            >
-                              Edit
-                            </Dropdown.Item>
-                            <Dropdown.Item></Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => deleteItem("toDo", i)}
-                            >
-                              Delete
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
+            return (
+              <Col
+                key={k}
+                md={4}
+                className="board-column"
+                onDragEnter={() => setOnPointer(column.name)}
+              >
+                <Container>
+                  <ListGroup>
+                    <ListGroup.Item
+                      className="text-center font-weight-bold"
+                      style={{ background: column.color }}
+                    >
+                      {column.name}
+                      <span
+                        style={{ float: "right" }}
+                        onClick={() =>
+                          setShowAdd({
+                            ...showAdd,
+                            colName: column.name,
+                            status: true,
+                          })
+                        }
+                      >
+                        <FaPlus />
                       </span>
                     </ListGroup.Item>
-                  ))}
-              </ListGroup>
-            </Container>
-          </Col>
+                    {(data as any)[column.name] &&
+                      (data as any)[column.name].map((task: any, i: number) => (
+                        <ListGroup.Item
+                          draggable
+                          onDragStart={() =>
+                            document
+                              .getElementsByClassName(
+                                `ticket-${column.name}-${i}`
+                              )[0]
+                              .classList.add("is-dragging")
+                          }
+                          onDragEnd={() => onMouseUp(column.name, i)}
+                          key={i}
+                          className={`ticket ticket-${column.name}-${i}`}
+                        >
+                          {task.name}
+                          <span style={{ display: "flex" }}>
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="light"
+                                id="dropdown-basic"
+                              >
+                                <FaArrowsAltH />
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                {otherColumns.map((col, k) => (
+                                  <Dropdown.Item
+                                    key={k}
+                                    onClick={() =>
+                                      moveTo(column.name, i, col.name)
+                                    }
+                                  >
+                                    {col.name}
+                                  </Dropdown.Item>
+                                ))}
+                              </Dropdown.Menu>
+                            </Dropdown>
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="light"
+                                id="dropdown-basic"
+                              >
+                                <FaEllipsisH />
+                              </Dropdown.Toggle>
 
-          <Col
-            md={4}
-            className="board-column"
-            onDragEnter={() => setOnPointer("progress")}
-          >
-            <Container>
-              <ListGroup>
-                <ListGroup.Item
-                  variant="warning"
-                  className="text-center font-weight-bold"
-                >
-                  Doing
-                  <span
-                    style={{ float: "right" }}
-                    onClick={() =>
-                      setShowAdd({
-                        ...showAdd,
-                        colName: "progress",
-                        status: true,
-                      })
-                    }
-                  >
-                    <FaPlus />
-                  </span>
-                </ListGroup.Item>
-                {data.progress &&
-                  data.progress.map((task, i) => (
-                    <ListGroup.Item
-                      draggable
-                      onDragStart={() =>
-                        document
-                          .getElementsByClassName(`ticket-progress-${i}`)[0]
-                          .classList.add("is-dragging")
-                      }
-                      onDragEnd={() => onMouseUp("progress", i)}
-                      key={i}
-                      className={`ticket ticket-progress-${i}`}
-                    >
-                      {task.name}
-                      <span style={{ display: "flex" }}>
-                        <Dropdown>
-                          <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            <FaArrowsAltH />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() => moveTo("progress", i, "toDo")}
-                            >
-                              To do
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => moveTo("progress", i, "done")}
-                            >
-                              Done
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown>
-                          <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            <FaEllipsisH />{" "}
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() =>
-                                setShowEdit({
-                                  ...showEdit,
-                                  content: data["progress"]
-                                    ? data["progress"][i]
-                                    : { name: "", description: "" },
-                                  status: true,
-                                  colName: "progress",
-                                  i,
-                                })
-                              }
-                            >
-                              Edit
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => deleteItem("progress", i)}
-                            >
-                              Delete
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </span>
-                    </ListGroup.Item>
-                  ))}
-              </ListGroup>
-            </Container>
-          </Col>
-
-          <Col
-            md={4}
-            className="board-column"
-            onDragEnter={() => setOnPointer("done")}
-          >
-            <Container>
-              <ListGroup>
-                <ListGroup.Item
-                  variant="info"
-                  className="text-center font-weight-bold"
-                >
-                  Done
-                  <span
-                    style={{ float: "right" }}
-                    onClick={() =>
-                      setShowAdd({ ...showAdd, colName: "done", status: true })
-                    }
-                  >
-                    <FaPlus />
-                  </span>
-                </ListGroup.Item>
-                {data.done &&
-                  data.done.map((task, i) => (
-                    <ListGroup.Item
-                      draggable
-                      onDragStart={() =>
-                        document
-                          .getElementsByClassName(`ticket-done-${i}`)[0]
-                          .classList.add("is-dragging")
-                      }
-                      onDragEnd={() => onMouseUp("done", i)}
-                      key={i}
-                      className={`ticket ticket-done-${i}`}
-                    >
-                      {task.name}
-                      <span style={{ display: "flex" }}>
-                        <Dropdown>
-                          <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            <FaArrowsAltH />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() => moveTo("done", i, "toDo")}
-                            >
-                              To do
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => moveTo("done", i, "progress")}
-                            >
-                              Doing
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown>
-                          <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            <FaEllipsisH />{" "}
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() =>
-                                setShowEdit({
-                                  ...showEdit,
-                                  content: data["done"]
-                                    ? data["done"][i]
-                                    : { name: "", description: "" },
-                                  status: true,
-                                  colName: "done",
-                                  i,
-                                })
-                              }
-                            >
-                              Edit
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => deleteItem("done", i)}
-                            >
-                              Delete
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </span>
-                    </ListGroup.Item>
-                  ))}
-              </ListGroup>
-            </Container>
-          </Col>
+                              <Dropdown.Menu>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    setShowEdit({
+                                      ...showEdit,
+                                      content: (data as any)[column.name]
+                                        ? (data as any)[column.name][i]
+                                        : { name: "", description: "" },
+                                      status: true,
+                                      colName: column.name,
+                                      i,
+                                    })
+                                  }
+                                >
+                                  Edit
+                                </Dropdown.Item>
+                                <Dropdown.Item></Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => deleteItem(column.name, i)}
+                                >
+                                  Delete
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </span>
+                        </ListGroup.Item>
+                      ))}
+                  </ListGroup>
+                </Container>
+              </Col>
+            )
+          })}
         </Row>
       </Container>
 

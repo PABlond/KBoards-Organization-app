@@ -26,3 +26,16 @@ export interface IBoard {
   last_update: string
   role: string
 }
+
+export interface IColumn {
+  n: Number
+  name: string
+  color: string
+  id?: Number
+  board_id?: string
+}
+
+export interface IBoardState {
+  currentBoard: any, 
+  columns: IColumn
+}

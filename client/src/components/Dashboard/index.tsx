@@ -9,6 +9,7 @@ import BoardsList from "./BoardsList"
 import CreateBoard from "./CreateBoard"
 import dispatchBoardsList from "./../../actions/dispatchBoardsList"
 import { IBoard } from "./../../interfaces/data.interface"
+import { socket } from "./../../config/sockets"
 
 const GET_BOARDS = gql`
   query GetBoards($token: String!) {
@@ -30,12 +31,16 @@ const Dashboard = ({ boards }: { boards: { list: IBoard[] } }) => {
   const [isLoading, setIsLoading] = useState<Boolean>(true)
 
   useEffect(() => {
-     if (data.getBoards && isLoading) {
+    if (data.getBoards && isLoading) {
       dispatchBoardsList(data.getBoards)
       setIsLoading(false)
     } else if (error || loading) {
       console.log(error, loading)
     }
+
+    socket.on("boardsList", (boards: any) => {
+      dispatchBoardsList(boards)
+    })
   })
 
   return !isLoading ? (
