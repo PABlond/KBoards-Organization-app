@@ -36,7 +36,6 @@ const createBoard = async ({
       console.log(err)
       throw err
     })
-  console.log(await getBoardsList(user.id))
   return await getBoardsList(user.id)
 }
 
