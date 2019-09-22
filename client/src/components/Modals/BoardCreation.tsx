@@ -28,31 +28,10 @@ export default ({
     { name: string; color: string; colorShow: Boolean }[]
   >([columnType])
   const saveChanges = async () => {
-    const token = getUser()
     const { title, description } = updatedData
-    // const query = gql`
-    //   query CreateBoard($token: String, $title: String, $description: String) {
-    //     createBoard(token: $token, title: $title, description: $description) {
-    //       title
-    //       description
-    //       created_at
-    //       last_update
-    //       role
-    //     }
-    //   }
-    // `
-    // const response = await client
-    //   .query({
-    //     query: query,
-    //     variables: {
-    //       token,
-    //       title,
-    //       description,
-    //     },
-    //   })
-    //   .catch(err => err)
     socket.emit("createBoard", { title, description, columns })
     setUpdatedData(initialDataValues)
+    setColumns([columnType])
     handleClose()
   }
 

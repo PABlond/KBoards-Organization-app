@@ -96,7 +96,7 @@ const Board = ({
   }
 
   useEffect(() => {
-    setData(boards.currentBoard)
+    return () => setData(boards.currentBoard)
   }, [boards])
 
   useEffect(() => {
@@ -111,14 +111,12 @@ const Board = ({
         description: String
         column: string
       }) => {
-        console.log({
-          name,
-          description,
-          column,
-        })
         setData({
           ...data,
-          [column]: [...(data as any)[column], { name, description }],
+          [column]:
+            Object.keys(data).indexOf(column) !== -1
+              ? [...(data as any)[column], { name, description }]
+              : [{ name, description }],
         })
         setWaitingResponse(false)
       }
@@ -137,17 +135,17 @@ const Board = ({
         name: string
         description: string
       }) => {
-        console.log({
-          to,
-          colName,
-          name,
-          description,
-           data
-        })
+        console.log('moving from / to', colName, to)
         setData({
           ...data,
-          [to]: [...(data as any)[to], { name, description }],
-          [colName]: removeRow(colName, { name }),
+          [to]:
+            Object.keys(data).indexOf(to) !== -1
+              ? [...(data as any)[to], { name, description }]
+              : [{ name, description }],
+          [colName]:
+            Object.keys(data).indexOf(colName) !== -1
+              ? removeRow(colName, { name })
+              : [],
         })
         setWaitingResponse(false)
       }
@@ -181,11 +179,14 @@ const Board = ({
       ({ colName, name }: { colName: string; name: string }) => {
         setData({
           ...data,
-          [colName]: removeRow(colName, { name }),
+          [colName]:
+            Object.keys(data).indexOf(colName) !== -1
+              ? removeRow(colName, { name })
+              : [],
         })
       }
     )
-  })
+  }, [data])
 
   const { columns } = boards
 

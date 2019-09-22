@@ -5,11 +5,11 @@ import { getUser } from "./../../../actions/auth"
 import client from "./../../../config/apolloClient"
 import gql from "graphql-tag"
 import dispatchCurrentBoard from "./../../../actions/dispatchCurrentBoard"
-import dispatchBoardColumns from './../../../actions/dispatchBoardColumns'
+import dispatchBoardColumns from "./../../../actions/dispatchBoardColumns"
 import Board from "./../../../components/Board"
 import Loading from "./../../../components/Loading"
 import Layout from "./../../../components/Layout/index.logged"
-import {socket } from './../../../config/sockets'
+import { socket } from "./../../../config/sockets"
 
 const BoardPage = ({ location }: { location: any }) => {
   const [loading, setLoading] = useState<Boolean>(true)
@@ -38,10 +38,8 @@ const BoardPage = ({ location }: { location: any }) => {
         },
       })
       .catch(err => err)
-      console.log(response.data)
-    dispatchCurrentBoard(response.data.getBoardTickets)
-    setLoading(false)
 
+    dispatchCurrentBoard(response.data.getBoardTickets)
   }
 
   useEffect(() => {
@@ -49,8 +47,11 @@ const BoardPage = ({ location }: { location: any }) => {
     setId(id)
     const token = getUser()
     requestTickets(token, id)
-    socket.emit('getColumns', {id})
-    socket.on('getColumns', data => dispatchBoardColumns(data))
+    socket.emit("getColumns", { id })
+    socket.on("getColumns", (data: any) => {
+      dispatchBoardColumns(data)
+      setLoading(false)
+    })
   }, [])
 
   return !loading ? (

@@ -12,7 +12,6 @@ const getBoardsList = async (id: string) => {
 const getBoards = async ({ token }: { token: string }) => {
   const user = await auth.user({ token })
   const boardsList = await getBoardsList(user.id)
-  console.log("boardsList", boardsList)
 
   return boardsList
 }

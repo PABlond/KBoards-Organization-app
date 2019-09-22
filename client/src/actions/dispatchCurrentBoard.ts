@@ -10,17 +10,6 @@ export default (list: any) => {
         ? [...(payload as any)[row.cat as string], row]
         : [row]
   })
-  console.log(list)
-  // const toDo = list
-  //   .map((row: IRow) => (row.cat == "toDo" ? row : null))
-  //   .filter(Boolean)
-  // const progress = list
-  //   .map((row: IRow) => (row.cat == "progress" ? row : null))
-  //   .filter(Boolean)
-  // const done = list
-  //   .map((row: IRow) => (row.cat == "done" ? row : null))
-  //   .filter(Boolean)
-  // const payload = { toDo, progress, done }
   console.log(payload)
   const { setBoardTickets } = constants
   return store.dispatch({

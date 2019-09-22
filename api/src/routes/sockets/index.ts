@@ -59,7 +59,6 @@ export default (io: any) =>
     )
 
     socket.on('getColumns', async ({id}: {id: Number}) => {
-      console.log('request columns')
       socket.emit('getColumns', await connection.query(
         `SELECT * FROM  boards_column WHERE board_id = ?`,
         [id]
