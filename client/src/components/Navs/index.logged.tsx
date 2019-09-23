@@ -1,14 +1,17 @@
 import React, { useEffect } from "react"
-import { Nav, Navbar } from "react-bootstrap"
+import { Nav, Navbar, NavDropdown } from "react-bootstrap"
 import { navigate } from "gatsby"
 import { connect } from "react-redux"
+import { IBoard } from "./../../interfaces/data.interface"
 
 const LoggedNav = ({ boards }: any) => {
-
   return (
     <Navbar collapseOnSelect expand="lg" id="nav" fixed="top">
-      <Navbar.Brand className="text-light" href="#home">
-        React-Bootstrap
+      <Navbar.Brand
+        className="text-light cursor-pointer"
+        onClick={() => navigate("/dashboard")}
+      >
+        KBoards
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
@@ -18,20 +21,20 @@ const LoggedNav = ({ boards }: any) => {
           onSelect={(selectedKey: string) => navigate(selectedKey)}
         >
           <Nav.Item>
-            <Nav.Link className="text-light" eventKey="/">
-              Home
+            <Nav.Link eventKey="/dashboard">
+              Dashboard
             </Nav.Link>
           </Nav.Item>
-          <Nav.Item>
-            <Nav.Link className="text-light" eventKey="/login">
-              Login
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link className="text-light" eventKey="/signup">
-              Signup
-            </Nav.Link>
-          </Nav.Item>
+          <NavDropdown title="Boards"  className="text-light" id="collasible-nav-dropdown">
+            {boards.list.length ? boards.list.map((board: IBoard, i: number) => (
+              <NavDropdown.Item
+                key={i}
+                href={`/dashboard/board?id=${board.id}`}
+              >
+                {board.title}
+              </NavDropdown.Item>
+            )) : <NavDropdown.Item disable>No board</NavDropdown.Item>}
+          </NavDropdown>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
