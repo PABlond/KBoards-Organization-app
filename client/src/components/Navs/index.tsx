@@ -24,7 +24,7 @@ export default () => {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link className="text-light" eventKey="/signup">
+            <Nav.Link className="text-light nav-signup" eventKey="/signup">
               Signup
             </Nav.Link>
           </Nav.Item>
