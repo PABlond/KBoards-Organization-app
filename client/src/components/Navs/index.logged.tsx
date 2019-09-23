@@ -1,8 +1,9 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Nav, Navbar, NavDropdown } from "react-bootstrap"
 import { navigate } from "gatsby"
 import { connect } from "react-redux"
 import { IBoard } from "./../../interfaces/data.interface"
+import { logout } from "./../../actions/auth"
 
 const LoggedNav = ({ boards }: any) => {
   return (
@@ -21,19 +22,35 @@ const LoggedNav = ({ boards }: any) => {
           onSelect={(selectedKey: string) => navigate(selectedKey)}
         >
           <Nav.Item>
-            <Nav.Link eventKey="/dashboard">
-              Dashboard
-            </Nav.Link>
+            <Nav.Link eventKey="/dashboard">Dashboard</Nav.Link>
           </Nav.Item>
-          <NavDropdown title="Boards"  className="text-light" id="collasible-nav-dropdown">
-            {boards.list.length ? boards.list.map((board: IBoard, i: number) => (
-              <NavDropdown.Item
-                key={i}
-                href={`/dashboard/board?id=${board.id}`}
-              >
-                {board.title}
-              </NavDropdown.Item>
-            )) : <NavDropdown.Item disable>No board</NavDropdown.Item>}
+          <NavDropdown
+            title="Boards"
+            className="text-light"
+            id="collasible-nav-dropdown"
+          >
+            {boards.list.length ? (
+              boards.list.map((board: IBoard, i: number) => (
+                <NavDropdown.Item
+                  key={i}
+                  href={`/dashboard/board?id=${board.id}`}
+                >
+                  {board.title}
+                </NavDropdown.Item>
+              ))
+            ) : (
+              <NavDropdown.Item disable>No board</NavDropdown.Item>
+            )}
+          </NavDropdown>
+        </Nav>
+
+        <Nav className="justify-content-end" activeKey="/home">
+          <NavDropdown
+            title="User"
+            className="text-light"
+            id="collasible-nav-dropdown"
+          >
+            <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

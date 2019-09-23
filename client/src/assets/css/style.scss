@@ -27,17 +27,15 @@ body {
 // ****************************************
 
 #nav {
-  .navbar-collapse {
-    .navbar-nav {
-      .nav-item {
-        a {
-          color: $light
-        }
+  .navbar-nav {
+    .nav-item {
+      a {
+        color: $light;
+      }
 
-        .dropdown-menu {
-          a {
-            color: $dark
-          }
+      .dropdown-menu {
+        a {
+          color: $dark;
         }
       }
     }
