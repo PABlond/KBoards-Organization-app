@@ -10,6 +10,7 @@ import Board from "./../../../components/Board"
 import Loading from "./../../../components/Loading"
 import Layout from "./../../../components/Layout/index.logged"
 import { socket } from "./../../../config/sockets"
+import LoggedNav from './../../../components/Navs/index.logged'
 
 const BoardPage = ({ location }: { location: any }) => {
   const [loading, setLoading] = useState<Boolean>(true)
@@ -57,6 +58,7 @@ const BoardPage = ({ location }: { location: any }) => {
   return !loading ? (
     <>
       <Layout>
+        <LoggedNav />
         <Board boardId={boardId} />
       </Layout>
     </>
