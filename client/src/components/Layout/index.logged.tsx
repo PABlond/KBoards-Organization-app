@@ -8,6 +8,7 @@ import { UserType } from "../../interfaces/user.interface"
 import constants from "../../config/constants"
 import { getUser, setUser } from "./../../actions/auth"
 import Loading from "./../Loading"
+import dispatchBoardsList from "./../../actions/dispatchBoardsList"
 
 const mapStateToProps = (state: any) => {
   const { maxWidth, maxHeight } = state.nav
@@ -54,6 +55,13 @@ const IS_LOGGED = gql`
       isLogged
       token
     }
+    getBoards(token: $token) {
+      title
+      description
+      id
+      created_at
+      role
+    }
   }
 `
 
@@ -65,6 +73,7 @@ const LoggedLayout = ({
   maxHeight,
 }: any) => {
   const [isLogged, setIsLogged] = useState<Boolean>(true)
+  const [boardsFetched, setBoardsFetched] = useState<Boolean>(false)
   const token = getUser()
   const { loading, error, data = {} }: any = useQuery(IS_LOGGED, {
     variables: { token },
@@ -84,9 +93,19 @@ const LoggedLayout = ({
       navigate("/login")
     }
   })
+
   useEffect(() => {
     updateDimensions()
   }, [])
+
+  useEffect(() => {
+    if (!boardsFetched && data.getBoards) {
+      if (data.getBoards.length) {
+        dispatchBoardsList(data.getBoards)
+        setBoardsFetched(true)
+      }
+    }
+  }, [data])
 
   return !loading && isLogged ? (
     <div id="logged-layout" style={{ maxWidth, maxHeight }}>

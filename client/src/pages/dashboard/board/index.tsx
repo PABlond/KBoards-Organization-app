@@ -5,9 +5,12 @@ import { getUser } from "./../../../actions/auth"
 import client from "./../../../config/apolloClient"
 import gql from "graphql-tag"
 import dispatchCurrentBoard from "./../../../actions/dispatchCurrentBoard"
+import dispatchBoardColumns from "./../../../actions/dispatchBoardColumns"
 import Board from "./../../../components/Board"
 import Loading from "./../../../components/Loading"
 import Layout from "./../../../components/Layout/index.logged"
+import { socket } from "./../../../config/sockets"
+import LoggedNav from './../../../components/Navs/index.logged'
 
 const BoardPage = ({ location }: { location: any }) => {
   const [loading, setLoading] = useState<Boolean>(true)
@@ -38,18 +41,24 @@ const BoardPage = ({ location }: { location: any }) => {
       .catch(err => err)
 
     dispatchCurrentBoard(response.data.getBoardTickets)
-    setLoading(false)
   }
+
   useEffect(() => {
     const { id } = queryString.parse(location.search)
     setId(id)
     const token = getUser()
     requestTickets(token, id)
+    socket.emit("getColumns", { id })
+    socket.on("getColumns", (data: any) => {
+      dispatchBoardColumns(data)
+      setLoading(false)
+    })
   }, [])
 
   return !loading ? (
     <>
       <Layout>
+        <LoggedNav />
         <Board boardId={boardId} />
       </Layout>
     </>
