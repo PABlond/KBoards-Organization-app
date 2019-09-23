@@ -1,8 +1,4 @@
-import React, { useEffect, useState } from "react"
-import gql from "graphql-tag"
-import { useQuery } from "@apollo/react-hooks"
-import { getUser } from "./../../actions/auth"
-import Loading from "./../Loading"
+import React, { useEffect } from "react"
 import { connect } from "react-redux"
 import { Container } from "react-bootstrap"
 import BoardsList from "./BoardsList"
@@ -10,18 +6,6 @@ import CreateBoard from "./CreateBoard"
 import dispatchBoardsList from "./../../actions/dispatchBoardsList"
 import { IBoard } from "./../../interfaces/data.interface"
 import { socket } from "./../../config/sockets"
-
-const GET_BOARDS = gql`
-  query GetBoards($token: String!) {
-    getBoards(token: $token) {
-      title
-      description
-      id
-      created_at
-      role
-    }
-  }
-`
 
 const Dashboard = ({ boards }: { boards: { list: IBoard[] } }) => {
 

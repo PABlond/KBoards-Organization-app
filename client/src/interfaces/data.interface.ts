@@ -37,5 +37,5 @@ export interface IColumn {
 
 export interface IBoardState {
   currentBoard: any, 
-  columns: IColumn
+  columns: IColumn[]
 }

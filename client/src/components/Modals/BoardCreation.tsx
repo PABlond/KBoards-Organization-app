@@ -1,9 +1,5 @@
 import React, { useState } from "react"
 import { Modal, Button, Form, Col } from "react-bootstrap"
-import client from "./../../config/apolloClient"
-import { getUser } from "./../../actions/auth"
-import gql from "graphql-tag"
-import dispatchBoardsList from "./../../actions/dispatchBoardsList"
 import { TwitterPicker } from "react-color"
 import { socket } from "./../../config/sockets"
 

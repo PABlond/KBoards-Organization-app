@@ -257,7 +257,7 @@ const Board = ({
                                 <FaArrowsAltH />
                               </Dropdown.Toggle>
                               <Dropdown.Menu>
-                                {otherColumns.map((col, k) => (
+                                {otherColumns.map((col: IColumn | null, k: number) => col && (
                                   <Dropdown.Item
                                     key={k}
                                     onClick={() =>

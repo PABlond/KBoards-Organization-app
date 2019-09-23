@@ -1,6 +1,5 @@
 import store from "./../store"
 import constants from "./../config/constants"
-import { IRow } from "./../interfaces/data.interface"
 
 export default (list: any) => {
   const payload = {}
