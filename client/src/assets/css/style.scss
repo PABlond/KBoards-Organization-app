@@ -33,6 +33,15 @@ body {
         color: $light;
       }
 
+      .nav-signup {
+        background: $light;
+        color: $dark !important;
+        border-radius: 0.25rem !important;
+        font-weight: 600;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
       .dropdown-menu {
         a {
           color: $dark;

@@ -7,7 +7,7 @@ import { logout } from "./../../actions/auth"
 
 const LoggedNav = ({ boards }: any) => {
   return (
-    <Navbar collapseOnSelect expand="lg" id="nav" fixed="top">
+    <Navbar collapseOnSelect expand="lg" id="nav">
       <Navbar.Brand
         className="text-light cursor-pointer"
         onClick={() => navigate("/dashboard")}
